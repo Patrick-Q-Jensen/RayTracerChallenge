@@ -1,10 +1,10 @@
 ﻿namespace RayTracerChallenge;
 
 public static class MathOperations {
-    const float Epsilon = 0.00001f;
+    const double Epsilon = 0.00001f;
     private readonly static Tuple zeroTuple = new Tuple(0, 0, 0, 0);
 
-    public static bool FloatingEquals(float a, float b) {
+    public static bool FloatingEquals(double a, double b) {
         if (Math.Abs(a-b) < Epsilon) return true;        
         return false;
     }
@@ -42,12 +42,27 @@ public static class MathOperations {
         return SubtractTuples(zeroTuple, t);
     }
 
-    public static Tuple MultiplyTuple(Tuple t, float multiplier) {
+    public static Tuple MultiplyTuple(Tuple t, double multiplier) {
         return new Tuple(t.X * multiplier, t.Y * multiplier, t.Z * multiplier, t.W * multiplier);
     }
 
-    public static Tuple DivideTuple(Tuple t, float divisor) {
+    public static Tuple DivideTuple(Tuple t, double divisor) {
         return new Tuple(t.X/divisor, t.Y/divisor, t.Z/divisor, t.W/divisor);
+    }
+
+    public static double VectorMagnitude(Vector v) {
+        double magnitude = Math.Sqrt((Math.Pow(v.X, 2) + Math.Pow(v.Y, 2) + Math.Pow(v.Z, 2) + Math.Pow(v.W, 2)));
+        return magnitude;
+    }
+
+    public static Vector NormalizeVector(Vector v) {
+        double magnitude = VectorMagnitude(v);
+        return new(v.X/magnitude, v.Y/magnitude, v.Z/magnitude);
+    }
+
+    public static double VectorsDotProduct(Vector a, Vector b)
+    {
+        return 0;
     }
 
 }

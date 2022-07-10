@@ -1,11 +1,11 @@
 ﻿namespace RayTracerChallenge;
 
 public class Tuple {
-    public float X, Y, Z;
-    protected float w;
-    public float W => w;
+    public double X, Y, Z;
+    protected double w;
+    public double W => w;
 
-    public Tuple(float x, float y, float z, float w)
+    public Tuple(double x, double y, double z, double w)
     {
         X = x;
         Y = y;

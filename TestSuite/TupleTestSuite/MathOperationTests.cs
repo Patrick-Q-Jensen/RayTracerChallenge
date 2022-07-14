@@ -41,7 +41,17 @@ public class MathOperationTests {
         Vector b = new(-5d, 5d, 2d);
         Vector c = new(-2.5d, 2.5d, 2d);
 
-        Assert.True(MathOperations.TuplesEqual(c, MathOperations.AddVectors(a, b)));
+        Assert.True(MathOperations.TuplesEqual(c, MathOperations.AddTuples(a, b)));
+    }
+
+    [Fact]
+    public void AddColorsTest()
+    {
+        Color a = new(0.5, 0.2, 0.1);
+        Color b = new(0.5, 0.3, 0.8);
+        Color c = new(1, 0.5, 0.9);
+
+        MathOperations.TuplesEqual(MathOperations.AddTuples(a, b), c).Should().BeTrue();
     }
 
     [Fact]
@@ -72,7 +82,17 @@ public class MathOperationTests {
         Vector b = new(5d, -5d, 2d);
         Vector c = new(-2.5d, 2.5d, 2d);
 
-        Assert.True(MathOperations.TuplesEqual(c, MathOperations.SubtractVectors(a, b)));
+        Assert.True(MathOperations.TuplesEqual(c, MathOperations.SubtractTuples(a, b)));
+    }
+
+    [Fact]
+    public void SubtractColorsTest()
+    {
+        Vector a = new(0.5, 0.2, 1);
+        Vector b = new(0.2, 0.2, 0.1);
+        Vector c = new(0.3, 0, 0.9);
+
+        Assert.True(MathOperations.TuplesEqual(c, MathOperations.SubtractTuples(a, b)));
     }
 
     [Fact]
@@ -103,6 +123,17 @@ public class MathOperationTests {
         Tuple actualMultipliedTuple = MathOperations.MultiplyTuple(a, scalarValue);
         MathOperations.TuplesEqual(expectedMultipliedTuple, actualMultipliedTuple).Should().BeTrue();
     }
+
+    [Fact]
+    public void MultiplyColorScalar()
+    {
+        Color a = new(0.1, 0.3, 0.5);
+        double scalarValue = 2d;
+        Color expectedMultipliedColor = new(0.2, 0.6, 1);
+        Tuple actualMultipliedTuple = MathOperations.MultiplyTuple(a, scalarValue);
+        MathOperations.TuplesEqual(expectedMultipliedColor, actualMultipliedTuple).Should().BeTrue();
+    }
+
 
     [Fact]
     public void MultiplyTupleFraction()
@@ -146,6 +177,27 @@ public class MathOperationTests {
         Vector expectedNormalizedVector = new Vector(1, 0, 0);
         Vector actualNormalizedVector = MathOperations.NormalizeVector(v1);
         MathOperations.TuplesEqual(expectedNormalizedVector, actualNormalizedVector).Should().BeTrue();
+    }
+
+    [Fact]
+    public void DotProductVector()
+    {
+        Vector v1 = new(1,2,3);
+        Vector v2 = new(2,3,4);
+        MathOperations.VectorsDotProduct(v1, v2).Should().Be(20);
+    }
+
+    [Fact]
+    public void CrossProductVector()
+    {
+        Vector v1 = new(1, 2, 3);
+        Vector v2 = new(2, 3, 4);
+        Vector expectedCross1 = new(-1, 2, -1);
+        Vector expectedCross2 = new(1, -2, 1);
+        Vector actualCross1 = MathOperations.VectorsCrossProduct(v1, v2);
+        Vector actualCross2 = MathOperations.VectorsCrossProduct(v2, v1);
+        MathOperations.TuplesEqual(expectedCross1, actualCross1).Should().BeTrue();
+        MathOperations.TuplesEqual(expectedCross2, actualCross2).Should().BeTrue();
     }
 }
 

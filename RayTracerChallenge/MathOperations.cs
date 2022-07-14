@@ -18,8 +18,9 @@ public static class MathOperations {
         return new Point(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
     }
 
-    public static Vector AddVectors(Vector a, Vector b) {
-        return new Vector(a.X + b.X, a.Y + b.Y, a.Z + b.Z);
+    public static Tuple AddTuples(Tuple a, Tuple b)
+    {
+        return new Tuple(a.X + b.X, a.Y + b.Y, a.Z + b.Z, a.W + b.W);
     }
 
     public static Point SubtractVectorFromPoint(Point a, Vector b) {
@@ -30,9 +31,9 @@ public static class MathOperations {
         return new Vector(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
     }
 
-    public static Vector SubtractVectors(Vector a, Vector b) {
-        return new Vector(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
-    }
+    //public static Vector SubtractVectors(Vector a, Vector b) {
+    //    return new Vector(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
+    //}
 
     public static Tuple SubtractTuples(Tuple a, Tuple b) {
         return new Tuple(a.X - b.X, a.Y - b.Y, a.Z - b.Z, a.W - b.W);
@@ -62,7 +63,20 @@ public static class MathOperations {
 
     public static double VectorsDotProduct(Vector a, Vector b)
     {
-        return 0;
+        return (a.X * b.X) + (a.Y * b.Y) + (a.Z * b.Z) + (a.W * b.W);
+    }
+
+    public static Color MultiplyColors(Color a, Color b)
+    {
+        return new Color(a.Red * b.Red, a.Green * b.Green, a.Blue * b.Blue);
+    }
+
+    public static Vector VectorsCrossProduct(Vector a, Vector b)
+    {
+        return new Vector(
+            a.Y * b.Z - a.Z * b.Y, 
+            a.Z * b.X - a.X * b.Z, 
+            a.X * b.Y - a.Y * b.X);
     }
 
 }

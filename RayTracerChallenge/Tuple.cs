@@ -12,5 +12,10 @@ public class Tuple {
         Z = z;
         this.w = w;
     }
+    
+    public Vector ToVector()
+    {
+        return new Vector(X, Y, Z);
+    }
 }
 

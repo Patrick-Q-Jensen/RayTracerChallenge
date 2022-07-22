@@ -85,7 +85,7 @@ public static class MathOperations {
             a.X * b.Y - a.Y * b.X);
     }
 
-    public static bool MatrixesEqual(Matrix m1, Matrix m2)
+    public static bool MatricesEqual(Matrix m1, Matrix m2)
     {
         if (m1.matrix.LongLength != m2.matrix.LongLength) return false;
         
@@ -101,7 +101,7 @@ public static class MathOperations {
         {
             for (int x = 0; x < m1ColumnCount; x++)
             {
-                if (m1.matrix[y, x] != m2.matrix[y, x]) return false; 
+                if (FloatingEquals(m1.matrix[y, x], m2.matrix[y, x]) == false) return false; 
             }
         }
         return true;
@@ -168,9 +168,17 @@ public static class MathOperations {
         return product;
     }
 
-    public static double CalculateMatrixDeterminant(Matrix matrix)
+    public static double MatrixDeterminant(Matrix matrix)
     {
-        return matrix.matrix[0, 0] * matrix.matrix[1, 1] - matrix.matrix[0, 1] * matrix.matrix[1, 0];        
+        if(matrix.matrix.GetLength(0) == 2 && matrix.matrix.GetLength(1) == 2)
+            return matrix.matrix[0, 0] * matrix.matrix[1, 1] - matrix.matrix[0, 1] * matrix.matrix[1, 0];
+        double determinate = 0;
+        for (int x = 0; x < matrix.matrix.GetLength(1); x++)
+        {
+            double cofactor = MatrixCofactor(matrix, 0, x);
+            determinate += matrix.matrix[0, x] * cofactor;
+        }
+        return determinate;
     }
 
     public static Matrix Submatrix(Matrix  matrix, int row, int column)
@@ -193,6 +201,95 @@ public static class MathOperations {
             y2++;
         }
         return product;
+    }
+
+    public static double MatrixMinor(Matrix matrix, int row, int column)
+    {
+        Matrix submatrix = Submatrix(matrix, row, column);
+        return MatrixDeterminant(submatrix);
+    }
+
+    public static double MatrixCofactor(Matrix matrix, int row, int column)
+    {
+        double minor = MatrixMinor(matrix, row, column);
+        if ((row+column)%2 == 1) return minor*-1;
+        return minor;
+    }
+
+    public static Matrix InverseMatrix(Matrix matrix)
+    {
+        Matrix invertedMatrix = new Matrix(new double[matrix.matrix.GetLength(0), matrix.matrix.GetLength(1)]);
+        double determinant = MatrixDeterminant(matrix);
+
+        int rowCount = matrix.matrix.GetLength(0);
+        int columnCount = matrix.matrix.GetLength(1);
+
+        for (int y = 0; y < rowCount; y++)
+        {
+            for (int x = 0; x < columnCount; x++)
+            {    
+                invertedMatrix.matrix[x, y] = MatrixCofactor(matrix, y, x) / determinant;
+            }
+        }
+        return invertedMatrix;
+    }
+
+    public static Matrix Translation(double x, double y, double z)
+    {
+        return new Matrix(new double[4, 4] { { 1,0,0,x }, { 0,1,0,y }, { 0,0,1,z }, { 0,0,0,1 } });        
+    }
+
+    public static Matrix Scaling(double x, double y, double z)
+    {
+        return new Matrix(new double[4, 4] { { x, 0, 0, 0 }, { 0, y, 0, 0}, { 0, 0, z, 0 }, { 0, 0, 0, 1 } });
+    }
+
+    public static Matrix Rotation_X(double deg)
+    {
+        return new Matrix(new double[4, 4] { { 1, 0, 0, 0 }, { 0, Math.Cos(Radians(deg)), -Math.Sin(Radians(deg)), 0 }, { 0, Math.Sin(Radians(deg)), Math.Cos(Radians(deg)), 0 }, { 0, 0, 0, 1 } });
+    }
+
+    public static Matrix Rotation_Y(double deg)
+    {
+        return new Matrix(new double[4, 4] { 
+            { Math.Cos(Radians(deg)), 0, Math.Sin(Radians(deg)), 0 }, 
+            { 0, 1, 0, 0 }, 
+            { -Math.Sin(Radians(deg)), 0, Math.Cos(Radians(deg)), 0 }, 
+            { 0, 0, 0, 1 } });
+    }
+
+    public static Matrix Rotation_Z(double deg)
+    {
+        return new Matrix(new double[4, 4] {
+            { Math.Cos(Radians(deg)), -Math.Sin(Radians(deg)),0 , 0 },
+            { Math.Sin(Radians(deg)), Math.Cos(Radians(deg)), 0, 0 },
+            { 0, 0, 1, 0 },
+            { 0, 0, 0, 1 } });
+    }
+
+    public static double Radians(double deg)
+    {
+        return deg / 180 * Math.PI;
+    }
+
+    public static double Degrees(double radians)
+    {
+        return radians * (180 / Math.PI);
+    }
+
+    public static Matrix Shear(double xToY, double xToZ, double yToX, double yToZ, double ztoX, double zToY)
+    {
+        return new Matrix(new double[4, 4] { 
+            { 1, xToY, xToZ, 0 }, 
+            { yToX, 1, yToZ, 0 }, 
+            { ztoX, zToY, 1, 0 }, 
+            { 0, 0, 0, 1 } });
+    }
+
+    public static Point Position(Ray r, double t)
+    {
+        Vector v = MultiplyVector(r.Direction, t);
+        return AddPointAndVector(r.Origin, v);
     }
 
 }

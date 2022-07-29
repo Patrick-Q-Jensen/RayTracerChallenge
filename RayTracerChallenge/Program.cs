@@ -2,13 +2,45 @@
 
 internal class Program {
     static void Main(string[] args) {
-       
 
+        CastRayTest();
     }
 
     private static void DrawClock()
     {
         Canvas canvas = new Canvas(500, 500);
+    }
+
+    private static void CastRayTest()
+    {
+        Point ray_origin = new Point(0, 0, -10);
+        double wall_z = 11d;
+        double wallSize = 7d;
+        int canvasPixels = 200;
+        double pixel_size = wallSize / canvasPixels;
+        double half = wallSize / 2;
+        Canvas canvas = new Canvas(canvasPixels, canvasPixels);
+        Color color = new Color(1, 0, 0);
+        Sphere s = new Sphere();
+        Matrix transformation = MathOperations.MultiplyMatrices(MathOperations.Shear(0,0,0,0,1,0),MathOperations.Scaling(1, 0.5, 1));
+        s.SetTransformation(transformation);
+
+        for (int y = 0; y < canvasPixels-1; y++) {
+            double world_y = half - pixel_size * y;
+            for (int x = 0; x < canvasPixels-1; x++) {
+                double world_x = -half + pixel_size * x;
+                Point position = new Point(world_x, world_y, wall_z);
+
+                Ray r = new Ray(ray_origin, MathOperations.NormalizeVector(MathOperations.SubtractPoints(position, ray_origin)));
+                List<Intersection> intersecs = MathOperations.Intersections(s, r);
+
+                Intersection intersec = MathOperations.FindHit(intersecs);
+                if (intersec != null) {
+                    canvas.WritePixelColor(color, x, y);
+                }
+            }
+        }
+        canvas.SavePPMToFile(canvas.ConvertToPPM(), @"C:\Users\Patrick Quitzau Jens\Documents\CastRayTest.ppm");
     }
 
     private static void LaunchProjectile()

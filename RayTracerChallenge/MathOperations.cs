@@ -3,7 +3,9 @@
 public static class MathOperations {
     const double Epsilon = 0.00001f;
     private readonly static Tuple zeroTuple = new Tuple(0, 0, 0, 0);
-    public readonly static Matrix identitryMatrix = new Matrix(new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } });
+    private readonly static Matrix identityMatrix = new Matrix(new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } });
+
+    public static Matrix IdentityMatrix => new Matrix(new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } });
 
     public static bool FloatingEquals(double a, double b) {
         if (Math.Abs(a-b) < Epsilon) return true;        
@@ -290,6 +292,58 @@ public static class MathOperations {
     {
         Vector v = MultiplyVector(r.Direction, t);
         return AddPointAndVector(r.Origin, v);
+    }
+
+    public static List<Intersection> Intersections(Sphere s, Ray r)
+    {
+        Ray r2 = TransformRay(r, InverseMatrix(s.Transformation));
+        Vector sphere_to_ray = SubtractPoints(r2.Origin, new Point(0, 0, 0));
+        double a = VectorsDotProduct(r2.Direction, r2.Direction);
+        double b = 2 * VectorsDotProduct(r2.Direction, sphere_to_ray);
+        double c = VectorsDotProduct(sphere_to_ray, sphere_to_ray) - 1;
+        double discriminant = Math.Pow(b, 2) - 4 * a * c;
+        //double discriminant = Discriminant(s, r);
+        if (discriminant < 0) return new List<Intersection>();
+        List<Intersection> intersections = new List<Intersection>();
+        intersections.Add(new Intersection((-b - Math.Sqrt(discriminant)) / (2 * a), s));
+        intersections.Add(new Intersection((-b + Math.Sqrt(discriminant)) / (2 * a), s));        
+        return intersections;
+
+    }
+
+    public static double Discriminant(Sphere s, Ray r)
+    {
+        Vector sphere_to_ray = SubtractPoints(r.Origin, new Point(0, 0, 0));
+        double a = VectorsDotProduct(r.Direction, r.Direction);
+        double b = 2 * VectorsDotProduct(r.Direction, sphere_to_ray);
+        double c = VectorsDotProduct(sphere_to_ray, sphere_to_ray) - 1;
+        double discriminant = Math.Pow(b, 2) - 4 * a * c;
+        return discriminant;
+    }
+
+    public static Intersection FindHit(List<Intersection> intersections)
+    {
+        if (intersections == null) return null;
+        if (intersections.Count == 0) return null;        
+        if (!intersections.Where(x=>x.T > 0).Any()) return null;
+                
+        return intersections.Where(x=>x.T >= 0.0000d).OrderBy(x=>x.T).ToList().First();    
+    }
+
+    public static Ray TransformRay(Ray r, Matrix transformationMatrix)
+    {
+        return new Ray(MultiplyMatrixWithTuple(transformationMatrix, r.Origin).ToPoint(), 
+            MultiplyMatrixWithTuple(transformationMatrix, r.Direction).ToVector());
+        //return null;
+    }
+
+    public static Vector NormalOnSphere(Sphere s, Point worldPoint)
+    {
+        Point objectPoint = MultiplyMatrixWithTuple(InverseMatrix(s.Transformation), worldPoint).ToPoint();
+        Vector objectNormal = SubtractPoints(objectPoint, new Point(0, 0, 0));
+        Vector worldNormal = MultiplyMatrixWithTuple(TransposeMatrix(InverseMatrix(s.Transformation)), objectNormal).ToVector();
+        return NormalizeVector(worldNormal);
+        //return NormalizeVector(SubtractPoints(p, new Point(0, 0, 0)));
     }
 
 }

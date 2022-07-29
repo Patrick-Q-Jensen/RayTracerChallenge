@@ -92,7 +92,7 @@ public class MatrixTests
     public void MultiplyingMatrixWithIdentityMatrix()
     {
         Matrix matrix1 = new Matrix(new double[,] { { 1, 2, 3, 4 }, { 2, 4, 4, 2 }, { 8, 6, 4, 1 }, { 0, 0, 0, 1 } });
-        Matrix matrix2 = MathOperations.MultiplyMatrices(matrix1, MathOperations.identitryMatrix);
+        Matrix matrix2 = MathOperations.MultiplyMatrices(matrix1, MathOperations.IdentityMatrix);
         MathOperations.MatricesEqual(matrix1, matrix2).Should().BeTrue();
     }
 

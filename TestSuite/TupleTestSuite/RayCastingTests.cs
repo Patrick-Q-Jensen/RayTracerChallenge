@@ -32,10 +32,10 @@ public class RayCastingTests
     {
         Ray r = new Ray(new Point(0, 1, -5), new Vector(0, 0, 1));
         Sphere s = new Sphere();
-        List<Intersection> intersections = MathOperations.Intersections(s, r);
-        intersections.Count().Should().Be(2);
-        intersections[0].T.Should().Be(5);
-        intersections[1].T.Should().Be(5);
+        Intersections intersections = MathOperations.Intersections(s, r);
+        intersections.list.Count().Should().Be(2);
+        intersections.list[0].T.Should().Be(5);
+        intersections.list[1].T.Should().Be(5);
     }
 
     [Fact]
@@ -43,8 +43,8 @@ public class RayCastingTests
     {
         Ray r = new Ray(new Point(0, 3, -5), new Vector(0, 0, 1));
         Sphere s = new Sphere();
-        List<Intersection> intersections = MathOperations.Intersections(s, r);
-        intersections.Count.Should().Be(0);
+        Intersections intersections = MathOperations.Intersections(s, r);
+        intersections.list.Count.Should().Be(0);
     }
 
     [Fact]
@@ -52,10 +52,10 @@ public class RayCastingTests
     {
         Ray r = new Ray(new Point(0, 0, 0), new Vector(0, 0, 1));
         Sphere s = new Sphere();
-        List<Intersection> intersections = MathOperations.Intersections(s, r);
-        intersections.Count().Should().Be(2);
-        intersections[0].T.Should().Be(-1.0d);
-        intersections[1].T.Should().Be(1.0d);
+        Intersections intersections = MathOperations.Intersections(s, r);
+        intersections.list.Count().Should().Be(2);
+        intersections.list[0].T.Should().Be(-1.0d);
+        intersections.list[1].T.Should().Be(1.0d);
     }
 
     [Fact]
@@ -63,10 +63,10 @@ public class RayCastingTests
     {
         Ray r = new Ray(new Point(0, 0, 5), new Vector(0, 0, 1));
         Sphere s = new Sphere();
-        List<Intersection> intersections = MathOperations.Intersections(s, r);
-        intersections.Count.Should().Be(2);
-        intersections[0].T.Should().Be(-6.0d);
-        intersections[1].T.Should().Be(-4.0d);
+        Intersections intersections = MathOperations.Intersections(s, r);
+        intersections.list.Count.Should().Be(2);
+        intersections.list[0].T.Should().Be(-6.0d);
+        intersections.list[1].T.Should().Be(-4.0d);
     }
 
     [Fact]
@@ -84,12 +84,12 @@ public class RayCastingTests
         Sphere s = new Sphere();
         Intersection intsec1 = new Intersection(1, s);
         Intersection intsec2 = new Intersection(2, s);
-        List<Intersection> intersecs = new List<Intersection>();
-        intersecs.Add(intsec1);
-        intersecs.Add(intsec2);
-        intersecs.Count.Should().Be(2);
-        intersecs[0].T.Should().Be(1);
-        intersecs[1].T.Should().Be(2);
+        Intersections intersecs = new Intersections();
+        intersecs.list.Add(intsec1);
+        intersecs.list.Add(intsec2);
+        intersecs.list.Count.Should().Be(2);
+        intersecs.list[0].T.Should().Be(1);
+        intersecs.list[1].T.Should().Be(2);
     }
 
     [Fact]
@@ -97,7 +97,7 @@ public class RayCastingTests
     {
         Ray r = new Ray(new Point(0, 0, 5), new Vector(0, 0, 1));
         Sphere s = new Sphere();
-        Intersection intsec1 = new Intersection(1, r);
+        Intersection intsec1 = new Intersection(1, s);
         MathOperations.Intersections(s, r);
     }
 
@@ -107,7 +107,7 @@ public class RayCastingTests
         Sphere s = new Sphere();
         Intersection intsec1 = new(1, s);
         Intersection intsec2 = new(2, s);
-        List<Intersection> intersecs = new() { intsec1, intsec2 };
+        Intersections intersecs = new Intersections( new() { intsec1, intsec2 });
         Intersection hit = MathOperations.FindHit(intersecs);
         hit.Should().Be(intsec1);
     }
@@ -118,7 +118,7 @@ public class RayCastingTests
         Sphere s = new Sphere();
         Intersection intsec1 = new(-1, s);
         Intersection intsec2 = new(1, s);
-        List<Intersection> intersecs = new() { intsec1, intsec2 };
+        Intersections intersecs = new Intersections( new() { intsec1, intsec2 });
         Intersection hit = MathOperations.FindHit(intersecs);
         hit.Should().Be(intsec2);
     }
@@ -129,7 +129,7 @@ public class RayCastingTests
         Sphere s = new Sphere();
         Intersection intsec1 = new(-2, s);
         Intersection intsec2 = new(-1, s);
-        List<Intersection> intersecs = new() { intsec1, intsec2 };
+        Intersections intersecs = new Intersections(new() { intsec1, intsec2 });
         Intersection hit = MathOperations.FindHit(intersecs);
         hit.Should().Be(null);
     }
@@ -142,7 +142,7 @@ public class RayCastingTests
         Intersection intsec2 = new(7, s);
         Intersection intsec3 = new(-3, s);
         Intersection intsec4 = new(2, s);
-        List<Intersection> intersecs = new() { intsec1, intsec2, intsec3, intsec4 };
+        Intersections intersecs = new Intersections(new() { intsec1, intsec2, intsec3, intsec4 });
         Intersection hit = MathOperations.FindHit(intersecs);
         hit.Should().Be(intsec4);
     }
@@ -190,10 +190,10 @@ public class RayCastingTests
         Ray r = new Ray(new Point(0, 0, -5), new Vector(0, 0, 1));
         Sphere s = new Sphere();
         s.SetTransformation(MathOperations.Scaling(2, 2, 2));
-        List<Intersection> intersecs = MathOperations.Intersections(s, r);
-        intersecs.Count.Should().Be(2);
-        intersecs[0].T.Should().Be(3);
-        intersecs[1].T.Should().Be(7);
+        Intersections intersecs = MathOperations.Intersections(s, r);
+        intersecs.list.Count.Should().Be(2);
+        intersecs.list[0].T.Should().Be(3);
+        intersecs.list[1].T.Should().Be(7);
     }
 
     [Fact]
@@ -255,5 +255,23 @@ public class RayCastingTests
         s.SetTransformation(m);
         Vector n = MathOperations.NormalOnSphere(s, new Point(0, Math.Sqrt(2) / 2, -Math.Sqrt(2) / 2));
         MathOperations.TuplesEqual(n, new Vector(0, 0.97014, -0.24254));
+    }
+
+    [Fact]
+    public void ReflectingVectorAt45Deg()
+    {
+        Vector v = new Vector(1, -1, 0);
+        Vector n = new Vector(0, 1, 0);
+        Vector r = MathOperations.Reflect(v, n);
+        MathOperations.TuplesEqual(r, new Vector(1, 1, 0));
+    }
+
+    [Fact]
+    public void ReflectingVectorOffSlantedSurface()
+    {
+        Vector v = new Vector(0, -1, 0);
+        Vector n = new Vector(Math.Sqrt(2) / 2, Math.Sqrt(2) / 2, 0);
+        Vector r = MathOperations.Reflect(v, n);
+        MathOperations.TuplesEqual(r, new Vector(1, 0, 0));
     }
 }

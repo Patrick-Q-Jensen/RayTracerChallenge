@@ -22,5 +22,21 @@ public class Tuple {
     {
         return new Point(X, Y, Z);
     }
+
+    public Color ToColor()
+    {
+        return new Color(X, Y, Z);
+    }
+
+    public virtual Tuple Negate()
+    {
+        return MathOperations.NegateTuple(this);
+    }
+
+    public virtual Tuple Add(Tuple t)
+    {
+        return MathOperations.AddTuples(this, t);
+    }
 }
+
 

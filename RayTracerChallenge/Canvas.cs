@@ -79,7 +79,7 @@ public class Canvas
         int range2 = max2 - min2;
 
         double val2 = (colorValue - min1) * range2 / range1 + min2;
-        
+
         if (val2 < 0)
         {
             val2 = 0;
@@ -90,6 +90,29 @@ public class Canvas
         }
         return (int)Math.Round(val2);
     }
+
+    //private int ConvertColorValue(double colorValue)
+    //{
+    //    //int min1 = 0;
+    //    //int max1 = 1;
+    //    //int range1 = max1 - min1;
+
+    //    //int min2 = 0;
+    //    //int max2 = 255;
+    //    //int range2 = max2 - min2;
+
+    //    //double val2 = (colorValue - min1) * range2 / range1 + min2;
+
+    //    if (colorValue < 0)
+    //    {
+    //        colorValue = 0;
+    //    }
+    //    if (colorValue > 255)
+    //    {
+    //        colorValue = 255;
+    //    }
+    //    return (int)Math.Round(colorValue);
+    //}
 
     private string BuildHeader()
     {

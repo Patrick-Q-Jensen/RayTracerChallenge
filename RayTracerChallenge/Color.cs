@@ -10,4 +10,20 @@ public class Color : Tuple
     {
 
     }
+
+    public Color Add(Color c)
+    {
+        return MathOperations.AddTuples(this, c).ToColor();
+    }
+
+    public Color Multiply(Color c)
+    {
+        return MathOperations.MultiplyColors(this, c);
+    }
+
+    public Color Multiply(double m)
+    {
+        return MathOperations.MultiplyTuple(this, m).ToColor();
+    }
+
 }

@@ -10,4 +10,14 @@ public class Ray
         Origin = origin;
         Direction = direction;
     }
+
+    public Intersections Intersections(Sphere s)
+    {
+        return MathOperations.Intersections(s, this);
+    }
+
+    public Point Position(double t)
+    {
+        return MathOperations.Position(this, t);
+    }
 }

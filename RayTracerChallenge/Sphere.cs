@@ -1,22 +1,15 @@
 ﻿namespace RayTracerChallenge;
 
-public class Sphere
+public class Sphere : Shape
 {
-    private Matrix transformation;
-
-    public Matrix Transformation => transformation;
-
-    public Sphere(Matrix transformation = null)
+       
+    public Sphere()
     {
-        if (transformation == null) {
-            this.transformation = MathOperations.IdentityMatrix;
-            return;
-        }
-        this.transformation = transformation;
+
     }
 
-    public void SetTransformation(Matrix matrix)
+    public override Vector Normal(Point p)
     {
-        transformation = matrix;
+        return MathOperations.NormalOnSphere(this, p);
     }
 }

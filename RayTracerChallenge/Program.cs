@@ -4,6 +4,7 @@ internal class Program {
     static void Main(string[] args) {
 
         CastRayTest();
+        CastRayTest1();
     }
 
     private static void DrawClock()
@@ -11,10 +12,10 @@ internal class Program {
         Canvas canvas = new Canvas(500, 500);
     }
 
-    private static void CastRayTest()
+    private static void CastRayTest1()
     {
-        Point ray_origin = new Point(0, 0, -10);
-        double wall_z = 11d;
+        Point ray_origin = new Point(0, 0, -5);
+        double wall_z = 10d;
         double wallSize = 7d;
         int canvasPixels = 200;
         double pixel_size = wallSize / canvasPixels;
@@ -22,22 +23,78 @@ internal class Program {
         Canvas canvas = new Canvas(canvasPixels, canvasPixels);
         Color color = new Color(1, 0, 0);
         Sphere s = new Sphere();
-        Matrix transformation = MathOperations.MultiplyMatrices(MathOperations.Shear(0,0,0,0,1,0),MathOperations.Scaling(1, 0.5, 1));
-        s.SetTransformation(transformation);
+        //s.Material.Color = new Color(1, 0.2, 1);
+        //Point lightPosition = new Point(-10, 10, -10);
+        //Color lightColor = new Color(1, 1, 1);
+        //PointLight light = new PointLight(lightPosition, lightColor);
+        //Matrix transformation = MathOperations.MultiplyMatrices(MathOperations.Shear(0,0,0,0,1,0),MathOperations.Scaling(1, 0.5, 1));
+        //s.SetTransformation(transformation);
+
+        for (int y = 0; y < canvasPixels - 1; y++)
+        {
+            double world_y = half - pixel_size * y;
+            for (int x = 0; x < canvasPixels - 1; x++)
+            {
+                double world_x = -half + pixel_size * x;
+                Point position = new Point(world_x, world_y, wall_z);
+                Ray r = new Ray(ray_origin, MathOperations.NormalizeVector(MathOperations.SubtractPoints(position, ray_origin)));
+                Intersections intersecs = MathOperations.Intersections(s, r);
+
+                Intersection hit = MathOperations.FindHit(intersecs);
+                if (hit == null)
+                {
+                    continue;
+                }
+                //Point point = MathOperations.Position(r, hit.T);
+                //Vector normal = MathOperations.NormalOnSphere((Sphere)hit.IntersectionObject, point);
+                //Vector eye = MathOperations.NegateTuple(r.Direction).ToVector();
+                //Color color = MathOperations.Lighting(hit.IntersectionObject.Material, point, light, eye, normal);
+                canvas.WritePixelColor(color, x, y);
+
+                //if (hit != null) {
+                //}
+            }
+        }
+        canvas.SavePPMToFile(canvas.ConvertToPPM(), @"C:\Users\Patrick Quitzau Jens\Documents\CastRayTest1.ppm");
+    }
+
+    private static void CastRayTest()
+    {
+        Point ray_origin = new Point(0, 0, -5);
+        double wall_z = 10d;
+        double wallSize = 7d;
+        int canvasPixels = 400;
+        double pixel_size = wallSize / canvasPixels;
+        double half = wallSize / 2;
+        Canvas canvas = new Canvas(canvasPixels, canvasPixels);
+        Sphere s = new Sphere();
+        s.Material.Color = new Color(1, 0.2, 1);
+        Point lightPosition = new Point(-10, 10, -10);
+        Color lightColor = new Color(1, 1, 1);
+        PointLight light = new PointLight(lightPosition, lightColor);
 
         for (int y = 0; y < canvasPixels-1; y++) {
             double world_y = half - pixel_size * y;
             for (int x = 0; x < canvasPixels-1; x++) {
                 double world_x = -half + pixel_size * x;
                 Point position = new Point(world_x, world_y, wall_z);
-
-                Ray r = new Ray(ray_origin, MathOperations.NormalizeVector(MathOperations.SubtractPoints(position, ray_origin)));
-                List<Intersection> intersecs = MathOperations.Intersections(s, r);
-
-                Intersection intersec = MathOperations.FindHit(intersecs);
-                if (intersec != null) {
-                    canvas.WritePixelColor(color, x, y);
+                Ray r = new Ray(ray_origin, position.Subtract(ray_origin).Normalize());
+                Intersections intersecs = r.Intersections(s);
+                Intersection hit = intersecs.FindHit();
+                if (hit == null)
+                {
+                    continue;
                 }
+                Point point = r.Position(hit.T);
+                Vector normal = hit.IntersectionObject.Normal(point);
+                Vector eye = r.Direction.Negate();
+                               
+                Color color = MathOperations.Lighting(hit.IntersectionObject.Material, point, light, eye, normal);
+                Console.WriteLine($"Color: [{color.Red}, {color.Blue}, {color.Green}]");
+                canvas.WritePixelColor(color, x, y);
+
+                //if (hit != null) {
+                //}
             }
         }
         canvas.SavePPMToFile(canvas.ConvertToPPM(), @"C:\Users\Patrick Quitzau Jens\Documents\CastRayTest.ppm");

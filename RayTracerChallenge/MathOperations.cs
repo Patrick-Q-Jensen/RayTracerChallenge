@@ -60,7 +60,7 @@ public static class MathOperations {
     }
 
     public static double VectorMagnitude(Vector v) {
-        double magnitude = Math.Sqrt((Math.Pow(v.X, 2) + Math.Pow(v.Y, 2) + Math.Pow(v.Z, 2) + Math.Pow(v.W, 2)));
+        double magnitude = Math.Sqrt(Math.Pow(v.X, 2) + Math.Pow(v.Y, 2) + Math.Pow(v.Z, 2));
         return magnitude;
     }
 
@@ -294,7 +294,7 @@ public static class MathOperations {
         return AddPointAndVector(r.Origin, v);
     }
 
-    public static List<Intersection> Intersections(Sphere s, Ray r)
+    public static Intersections Intersections(Sphere s, Ray r)
     {
         Ray r2 = TransformRay(r, InverseMatrix(s.Transformation));
         Vector sphere_to_ray = SubtractPoints(r2.Origin, new Point(0, 0, 0));
@@ -302,12 +302,11 @@ public static class MathOperations {
         double b = 2 * VectorsDotProduct(r2.Direction, sphere_to_ray);
         double c = VectorsDotProduct(sphere_to_ray, sphere_to_ray) - 1;
         double discriminant = Math.Pow(b, 2) - 4 * a * c;
-        //double discriminant = Discriminant(s, r);
-        if (discriminant < 0) return new List<Intersection>();
+        if (discriminant < 0) return new Intersections(new List<Intersection>());
         List<Intersection> intersections = new List<Intersection>();
         intersections.Add(new Intersection((-b - Math.Sqrt(discriminant)) / (2 * a), s));
         intersections.Add(new Intersection((-b + Math.Sqrt(discriminant)) / (2 * a), s));        
-        return intersections;
+        return new Intersections(intersections);
 
     }
 
@@ -321,20 +320,19 @@ public static class MathOperations {
         return discriminant;
     }
 
-    public static Intersection FindHit(List<Intersection> intersections)
+    public static Intersection FindHit(Intersections intersections)
     {
         if (intersections == null) return null;
-        if (intersections.Count == 0) return null;        
-        if (!intersections.Where(x=>x.T > 0).Any()) return null;
+        if (intersections.list.Count == 0) return null;        
+        if (!intersections.list.Where(x=>x.T > 0).Any()) return null;
                 
-        return intersections.Where(x=>x.T >= 0.0000d).OrderBy(x=>x.T).ToList().First();    
+        return intersections.list.Where(x=>x.T > 0.0000d).OrderBy(x=>x.T).ToList().First();    
     }
 
     public static Ray TransformRay(Ray r, Matrix transformationMatrix)
     {
         return new Ray(MultiplyMatrixWithTuple(transformationMatrix, r.Origin).ToPoint(), 
             MultiplyMatrixWithTuple(transformationMatrix, r.Direction).ToVector());
-        //return null;
     }
 
     public static Vector NormalOnSphere(Sphere s, Point worldPoint)
@@ -343,7 +341,35 @@ public static class MathOperations {
         Vector objectNormal = SubtractPoints(objectPoint, new Point(0, 0, 0));
         Vector worldNormal = MultiplyMatrixWithTuple(TransposeMatrix(InverseMatrix(s.Transformation)), objectNormal).ToVector();
         return NormalizeVector(worldNormal);
-        //return NormalizeVector(SubtractPoints(p, new Point(0, 0, 0)));
+    }
+
+    public static Vector Reflect(Vector v, Vector n)
+    {
+        return MultiplyTuple(MultiplyTuple(SubtractTuples(v, n), 2), VectorsDotProduct(v, n)).ToVector();
+    }
+
+    public static Color Lighting(Material material, Point illuminationPoint, PointLight lightSource, Vector eye, Vector normal)
+    {
+        Color effectiveColor = material.Color.Multiply(lightSource.Intensity);
+        Vector lightVector = lightSource.Position.Subtract(illuminationPoint).Normalize();
+        Color ambient = effectiveColor.Multiply(material.Ambient);
+        double lightDotNormal = VectorsDotProduct(lightVector, normal);
+        Color diffuse = new Color();
+        Color specular = new Color();
+        
+        if (lightDotNormal > 0)
+        {
+            diffuse = effectiveColor.Multiply(material.Diffuse).Multiply(lightDotNormal);
+            Vector reflectV = Reflect(lightVector.Negate(), normal);
+            double reflectDotEye = VectorsDotProduct(reflectV, eye);
+            if (reflectDotEye > 0)
+            {
+                double factor = Math.Pow(reflectDotEye, material.Shininess);
+                specular = lightSource.Intensity.Multiply(material.Specular).Multiply(factor);
+            }
+        }
+        return ambient.Add(diffuse).Add(specular);
+        //return ambient.Add(diffuse);
     }
 
 }

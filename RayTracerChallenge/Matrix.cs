@@ -26,4 +26,49 @@ public class Matrix
         if (row >= rowCount || column >= columnCount) return;
         matrix[row, column] = value;
     }
+
+    public Matrix Translate(double x, double y, double z) {
+        return this * MathOperations.Translation(x, y, z);
+    }
+
+    public Matrix Scale(double x, double y, double z)
+    {
+        return this * MathOperations.Scaling(x, y, z);
+    }
+
+    public Matrix Rotate(Axis axis, double radians)
+    {
+        switch (axis)
+        {
+            case Axis.X:
+                return this * MathOperations.Rotation_X(MathOperations.Degrees(radians));
+            case Axis.Y:
+                return this * MathOperations.Rotation_Y(MathOperations.Degrees(radians));
+            case Axis.Z:
+                return this * MathOperations.Rotation_Z(MathOperations.Degrees(radians));
+            default:
+                return this;
+        }
+    }
+
+    public bool Equals(Matrix m)
+    {
+        return MathOperations.MatricesEqual(this, m);
+    }
+
+    public static Matrix operator *(Matrix a, Matrix b)
+    {
+        return MathOperations.MultiplyMatrices(a, b);
+    }
+
+    public static Tuple operator *(Matrix a, Tuple b)
+    {
+        return MathOperations.MultiplyMatrixWithTuple(a, b);
+    }
+
+    public Matrix Inverse()
+    {
+        return MathOperations.InverseMatrix(this);
+    }
+
 }

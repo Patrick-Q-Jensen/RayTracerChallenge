@@ -2,21 +2,28 @@
 
 public class Material
 {
-    public Color Color = new Color();
-    private double ambient, diffuse, specular, shininess;
+    public Color Color = new Color(1,1,1);
+    //private double ambient, diffuse, specular, shininess;
 
-    public double Ambient => ambient;
-    public double Diffuse => diffuse;
-    public double Specular => specular;
-    public double Shininess => shininess;
-    
+    public double Ambient;
+    public double Diffuse;
+    public double Specular;
+    public double Shininess;
+
 
     public Material(double ambient = 0.1, double diffuse = 0.9, double specular = 0.9, double shininess = 200)
     {
-        this.ambient = ambient;
-        this.diffuse = diffuse;
-        this.specular = specular;
-        this.shininess = shininess;
-
+        Ambient = ambient;
+        Diffuse = diffuse;
+        Specular = specular;
+        Shininess = shininess;
+    }
+    public Material(Color color, double ambient = 0.1, double diffuse = 0.9, double specular = 0.9, double shininess = 200)
+    {
+        Ambient = ambient;
+        Diffuse = diffuse;
+        Specular = specular;
+        Shininess = shininess;
+        Color = color;
     }
 }

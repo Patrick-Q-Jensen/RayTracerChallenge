@@ -37,6 +37,11 @@ public class Tuple {
     {
         return MathOperations.AddTuples(this, t);
     }
+
+    public bool Equals(Tuple t)
+    {
+        return MathOperations.TuplesEqual(this, t);
+    }
 }
 
 

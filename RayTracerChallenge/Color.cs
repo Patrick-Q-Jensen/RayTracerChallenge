@@ -26,4 +26,24 @@ public class Color : Tuple
         return MathOperations.MultiplyTuple(this, m).ToColor();
     }
 
+    public static Color operator *(Color a, double b)
+    {
+        return MathOperations.MultiplyTuple(a, b).ToColor();
+    }
+
+    public static Color operator *(Color a, Color b)
+    {
+        return MathOperations.MultiplyColors(a, b);
+    }
+
+    public static Color operator -(Color a, Color b)
+    {
+        return MathOperations.SubtractTuples(a, b).ToColor();
+    }
+
+    public static Color operator +(Color a, Color b)
+    {
+        return MathOperations.AddTuples(a, b).ToColor();
+    }
+
 }

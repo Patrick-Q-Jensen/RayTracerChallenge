@@ -11,13 +11,13 @@ public class Ray
         Direction = direction;
     }
 
-    public Intersections Intersections(Sphere s)
-    {
-        return MathOperations.Intersections(s, this);
-    }
-
     public Point Position(double t)
     {
         return MathOperations.Position(this, t);
+    }
+
+    public Ray Transform(Matrix m)
+    {
+        return MathOperations.TransformRay(this, m);
     }
 }

@@ -3,12 +3,12 @@
 public class Intersection
 {
     public double T;
-    public Shape IntersectionObject = null;
+    public Shape Shape = null;
 
     public Intersection(double t, Shape intersectionObject)
     {
         T = t;
-        IntersectionObject = intersectionObject;
+        Shape = intersectionObject;
     }
 }
 

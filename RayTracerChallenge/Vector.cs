@@ -19,6 +19,34 @@ public class Vector : Tuple
         return MathOperations.NegateTuple(this).ToVector();
     }
 
-    
+    public Vector Subtract(Vector v)
+    {
+        return MathOperations.SubtractTuples(this, v).ToVector();
+    }
+
+    public Vector Multiply(double m)
+    {
+        return MathOperations.MultiplyVector(this, m);
+    }
+
+    public static Vector operator *(Vector a, double b)
+    {
+        return MathOperations.MultiplyVector(a, b);
+    }
+
+    public static Vector operator -(Vector a, Vector b)
+    {
+        return MathOperations.SubtractTuples(a, b).ToVector();
+    }
+
+    public static Vector operator +(Vector a, Vector b)
+    {
+        return MathOperations.AddTuples(a, b).ToVector();
+    }
+
+    public double Magnitude()
+    {
+        return MathOperations.VectorMagnitude(this);
+    }
 }
 

@@ -1,7 +1,7 @@
 ﻿namespace RayTracerChallenge;
 
 public static class MathOperations {
-    const double Epsilon = 0.00001f;
+    public const double Epsilon = 0.00001f;
     private readonly static Tuple zeroTuple = new Tuple(0, 0, 0, 0);
     private readonly static Matrix identityMatrix = new Matrix(new double[4, 4] { { 1, 0, 0, 0 }, { 0, 1, 0, 0 }, { 0, 0, 1, 0 }, { 0, 0, 0, 1 } });
 
@@ -71,7 +71,7 @@ public static class MathOperations {
 
     public static double VectorsDotProduct(Vector a, Vector b)
     {
-        return (a.X * b.X) + (a.Y * b.Y) + (a.Z * b.Z) + (a.W * b.W);
+        return a.X * b.X + a.Y * b.Y + a.Z * b.Z + a.W * b.W;
     }
 
     public static Color MultiplyColors(Color a, Color b)
@@ -294,12 +294,12 @@ public static class MathOperations {
         return AddPointAndVector(r.Origin, v);
     }
 
-    public static Intersections Intersections(Sphere s, Ray r)
+    public static Intersections SphereIntersections(Sphere s, Ray r)
     {
-        Ray r2 = TransformRay(r, InverseMatrix(s.Transformation));
-        Vector sphere_to_ray = SubtractPoints(r2.Origin, new Point(0, 0, 0));
-        double a = VectorsDotProduct(r2.Direction, r2.Direction);
-        double b = 2 * VectorsDotProduct(r2.Direction, sphere_to_ray);
+        //Ray r2 = TransformRay(r, InverseMatrix(s.Transformation));
+        Vector sphere_to_ray = SubtractPoints(r.Origin, new Point(0, 0, 0));
+        double a = VectorsDotProduct(r.Direction, r.Direction);
+        double b = 2 * VectorsDotProduct(r.Direction, sphere_to_ray);
         double c = VectorsDotProduct(sphere_to_ray, sphere_to_ray) - 1;
         double discriminant = Math.Pow(b, 2) - 4 * a * c;
         if (discriminant < 0) return new Intersections(new List<Intersection>());
@@ -335,42 +335,83 @@ public static class MathOperations {
             MultiplyMatrixWithTuple(transformationMatrix, r.Direction).ToVector());
     }
 
-    public static Vector NormalOnSphere(Sphere s, Point worldPoint)
+    public static Vector NormalOnSphere(Sphere s, Point p)
     {
-        Point objectPoint = MultiplyMatrixWithTuple(InverseMatrix(s.Transformation), worldPoint).ToPoint();
-        Vector objectNormal = SubtractPoints(objectPoint, new Point(0, 0, 0));
+        //Point objectPoint = MultiplyMatrixWithTuple(InverseMatrix(s.Transformation), worldPoint).ToPoint();
+        Vector objectNormal = SubtractPoints(p, new Point(0, 0, 0));
         Vector worldNormal = MultiplyMatrixWithTuple(TransposeMatrix(InverseMatrix(s.Transformation)), objectNormal).ToVector();
         return NormalizeVector(worldNormal);
     }
 
     public static Vector Reflect(Vector v, Vector n)
     {
-        return MultiplyTuple(MultiplyTuple(SubtractTuples(v, n), 2), VectorsDotProduct(v, n)).ToVector();
+        return v - n * 2 * VectorsDotProduct(v, n);
     }
 
-    public static Color Lighting(Material material, Point illuminationPoint, PointLight lightSource, Vector eye, Vector normal)
+    public static Color Lighting(Material material, Point illuminationPoint, PointLight lightSource, Vector eye, Vector normal, bool inShadow = false)
     {
-        Color effectiveColor = material.Color.Multiply(lightSource.Intensity);
-        Vector lightVector = lightSource.Position.Subtract(illuminationPoint).Normalize();
-        Color ambient = effectiveColor.Multiply(material.Ambient);
+        Color effectiveColor = material.Color * lightSource.Intensity;
+        Vector lightVector = (lightSource.Position - illuminationPoint).Normalize();
+        Color ambient = effectiveColor * material.Ambient;
         double lightDotNormal = VectorsDotProduct(lightVector, normal);
-        Color diffuse = new Color();
-        Color specular = new Color();
-        
+        Color diffuse = new Color(0,0,0);
+        Color specular = new Color(0,0,0);
+        if (inShadow) return ambient;
         if (lightDotNormal > 0)
         {
-            diffuse = effectiveColor.Multiply(material.Diffuse).Multiply(lightDotNormal);
+            diffuse = effectiveColor * material.Diffuse * lightDotNormal;
             Vector reflectV = Reflect(lightVector.Negate(), normal);
             double reflectDotEye = VectorsDotProduct(reflectV, eye);
             if (reflectDotEye > 0)
             {
                 double factor = Math.Pow(reflectDotEye, material.Shininess);
-                specular = lightSource.Intensity.Multiply(material.Specular).Multiply(factor);
+                specular = lightSource.Intensity * material.Specular * factor;
             }
         }
         return ambient.Add(diffuse).Add(specular);
-        //return ambient.Add(diffuse);
+    }
+
+    //public static Vector GetNormal(Shape shape, Point position)
+    //{
+    //    if (typeof(Sphere) == shape.GetType())
+    //    {
+    //        return NormalOnSphere((Sphere)shape, position);
+    //    }
+
+    //    return null;
+    //}
+
+    public static Color ShadeHit(World w, IntersectionComputation ic)
+    {
+        bool inShadow = w.IsShadowed(ic.OverPoint);
+        return Lighting(ic.Shape.Material, ic.OverPoint, w.PointLight, ic.EyeV, ic.NormalV, inShadow);
+    }
+
+    public static Color ColorAt(World w, Ray r)
+    {
+        Intersections intersecs = w.IntersectRay(r);
+        Intersection i = intersecs.FindHit();
+        if (i == null) return new Color(0, 0, 0);
+        IntersectionComputation ic = new(i, r);
+        return ShadeHit(w, ic);
+    }
+
+    public static Matrix ViewTransform(Point from, Point to, Vector up)
+    {
+        Vector forward = (to - from).Normalize();
+        Vector left = VectorsCrossProduct(forward, up.Normalize());
+        Vector trueUp = VectorsCrossProduct(left, forward);
+        Matrix orientation = new Matrix(new double[4, 4] { 
+            { left.X, left.Y, left.Z, 0 }, 
+            { trueUp.X, trueUp.Y, trueUp.Z, 0 }, 
+            { -forward.X, -forward.Y, -forward.Z, 0 }, 
+            { 0, 0, 0, 1 } });
+        return orientation * Translation(-from.X, -from.Y, -from.Z);
     }
 
 }
 
+public enum Axis
+{
+    X,Y,Z
+}

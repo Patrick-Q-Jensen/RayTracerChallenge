@@ -46,6 +46,7 @@ public class Canvas
             for (int x = 0; x < Width; x++)
             {
                 newLine += $"{ConvertColorValue(GetPixelColor(y, x).Red)} {ConvertColorValue(GetPixelColor(y, x).Green)} {ConvertColorValue(GetPixelColor(y, x).Blue)} ";
+                //newLine += $"{Clamp(GetPixelColor(y, x).Red*255d, 255)} {Clamp(GetPixelColor(y, x).Green*255d,255)} {Clamp(GetPixelColor(y, x).Blue*255d,255)} ";
                 if (newLine.Length >= 60)
                 {
                     newLine = newLine.Remove(newLine.Length - 1);
@@ -89,6 +90,21 @@ public class Canvas
             val2 = 255;
         }
         return (int)Math.Round(val2);
+    }
+
+    static int Clamp(double channelColor, int maxValue, int minValue = 0)
+    {
+        int temp = (int)(channelColor);
+        if (temp > maxValue)
+        {
+            temp = maxValue;
+            return temp;
+        }
+        if (temp < minValue)
+        {
+            temp = minValue;
+        }
+        return temp;
     }
 
     //private int ConvertColorValue(double colorValue)

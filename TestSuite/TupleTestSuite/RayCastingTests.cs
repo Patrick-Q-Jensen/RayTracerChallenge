@@ -176,23 +176,6 @@ public class RayCastingTests
     }
 
     [Fact]
-    public void SphereDefaultTransformation()
-    {
-        Sphere s = new Sphere();
-        Matrix identityMatrix = MathOperations.IdentityMatrix;
-        MathOperations.MatricesEqual(identityMatrix, s.Transformation).Should().BeTrue();
-    }
-
-    [Fact]
-    public void SetSphereTransformation()
-    {
-        Sphere s = new Sphere();
-        Matrix t = MathOperations.Translation(2, 3, 4);
-        s.SetTransformation(t);
-        MathOperations.MatricesEqual(t, s.Transformation).Should().BeTrue();
-    }
-
-    [Fact]
     public void RayIntersectingScaledSphere()
     {
         Ray r = new Ray(new Point(0, 0, -5), new Vector(0, 0, 1));

@@ -335,13 +335,20 @@ public static class MathOperations {
             MultiplyMatrixWithTuple(transformationMatrix, r.Direction).ToVector());
     }
 
-    public static Vector NormalOnSphere(Sphere s, Point p)
-    {
-        //Point objectPoint = MultiplyMatrixWithTuple(InverseMatrix(s.Transformation), worldPoint).ToPoint();
-        Vector objectNormal = SubtractPoints(p, new Point(0, 0, 0));
-        Vector worldNormal = MultiplyMatrixWithTuple(TransposeMatrix(InverseMatrix(s.Transformation)), objectNormal).ToVector();
-        return NormalizeVector(worldNormal);
-    }
+    //public static Vector NormalOnSphere(Sphere s, Point p)
+    //{
+    //    //Point objectPoint = MultiplyMatrixWithTuple(InverseMatrix(s.Transformation), worldPoint).ToPoint();
+    //    Vector objectNormal = SubtractPoints(p, new Point(0, 0, 0));
+    //    Vector worldNormal = MultiplyMatrixWithTuple(TransposeMatrix(InverseMatrix(s.Transformation)), objectNormal).ToVector();
+    //    return NormalizeVector(worldNormal);
+    //}
+
+    //public static Vector NormalOnShape(Shape s, Point p)
+    //{
+    //    Point localPoint = s.Transformation.Inverse() * p;
+    //    Vector localNormal = 
+
+    //}
 
     public static Vector Reflect(Vector v, Vector n)
     {

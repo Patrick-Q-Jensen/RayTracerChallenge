@@ -1,6 +1,6 @@
 ﻿namespace RayTracerChallenge;
 
-public class Material
+public class Material :  IEquatable<Material>
 {
     public Color Color = new Color(1,1,1);
     //private double ambient, diffuse, specular, shininess;
@@ -25,5 +25,18 @@ public class Material
         Specular = specular;
         Shininess = shininess;
         Color = color;
+    }
+
+    public bool Equals(Material? other)
+    {
+        if (other == null)
+        {
+            return false;
+        }
+        return Ambient == other.Ambient 
+            && Diffuse == other.Diffuse
+            && Specular == other.Specular
+            && Shininess == other.Shininess
+            && Color.Equals(other.Color);
     }
 }

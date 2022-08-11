@@ -51,6 +51,11 @@ public class Matrix
         }
     }
 
+    public Matrix Transpose()
+    {
+        return MathOperations.TransposeMatrix(this);
+    }
+
     public bool Equals(Matrix m)
     {
         return MathOperations.MatricesEqual(this, m);
@@ -64,6 +69,16 @@ public class Matrix
     public static Tuple operator *(Matrix a, Tuple b)
     {
         return MathOperations.MultiplyMatrixWithTuple(a, b);
+    }
+
+    public static Point operator *(Matrix a, Point b)
+    {
+        return MathOperations.MultiplyMatrixWithTuple(a, b).ToPoint();
+    }
+
+    public static Vector operator *(Matrix a, Vector b)
+    {
+        return MathOperations.MultiplyMatrixWithTuple(a, b).ToVector();
     }
 
     public Matrix Inverse()

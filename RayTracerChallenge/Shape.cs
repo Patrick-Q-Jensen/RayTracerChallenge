@@ -9,20 +9,32 @@ public abstract class Shape
     {
         Transformation = matrix;
     }
+    public Vector Normal(Point p)
+    {
+        Point localPoint = ConvertPointToObjectSpace(p);
+        Vector localNormal = LocalNormal(localPoint);
+        Vector worldNormal = Transformation.Inverse().Transpose() * localNormal;
+        return worldNormal.Normalize();
+    }
 
-    public abstract Vector Normal(Point p);
+    public Intersections Intersections(Ray r)
+    {
+        Ray r2 = ConvertRayToObjectSpace(r);
+        return LocalIntersections(r2);
+    }
 
-    public abstract Intersections Intersections(Ray r);
-
-    protected Ray ConvertRayToObjectSpace(Ray r)
+    private Ray ConvertRayToObjectSpace(Ray r)
     {
         return MathOperations.TransformRay(r, this.Transformation.Inverse());
     }
 
-    protected Point ConvertPointToObjectSpace(Point p)
+    private Point ConvertPointToObjectSpace(Point p)
     {
         return MathOperations.MultiplyMatrixWithTuple(this.Transformation.Inverse(), p).ToPoint();
     }
+
+    protected abstract Vector LocalNormal(Point localPoint);
+    protected abstract Intersections LocalIntersections(Ray r);
 
 }
 

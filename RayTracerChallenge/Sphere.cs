@@ -15,18 +15,16 @@ public class Sphere : Shape
 
     public Sphere(Matrix transformation)
     {
-        this.SetTransformation(transformation);
+        SetTransformation(transformation);
     }
 
-    public override Vector Normal(Point p)
+    protected override Intersections LocalIntersections(Ray r)
     {
-        Point objectPoint = ConvertPointToObjectSpace(p);
-        return MathOperations.NormalOnSphere(this, objectPoint);
+        return MathOperations.SphereIntersections(this, r);
     }
 
-    public override Intersections Intersections(Ray r)
+    protected override Vector LocalNormal(Point localPoint)
     {
-        Ray r2 = ConvertRayToObjectSpace(r);
-        return MathOperations.SphereIntersections(this, r2);
+        return localPoint - new Point(0, 0, 0);
     }
 }

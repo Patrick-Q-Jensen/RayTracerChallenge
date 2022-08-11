@@ -3,10 +3,8 @@
 public class Matrix
 {
     public double[,] matrix;
-    private int rowCount;
-    private int columnCount;
-
-    //public double[,] Mtrx => matrix;
+    private readonly int rowCount;
+    private readonly int columnCount;
 
     public Matrix(int rows, int columns)
     {
@@ -38,22 +36,23 @@ public class Matrix
 
     public Matrix Rotate(Axis axis, double radians)
     {
-        switch (axis)
+        return axis switch
         {
-            case Axis.X:
-                return this * MathOperations.Rotation_X(MathOperations.Degrees(radians));
-            case Axis.Y:
-                return this * MathOperations.Rotation_Y(MathOperations.Degrees(radians));
-            case Axis.Z:
-                return this * MathOperations.Rotation_Z(MathOperations.Degrees(radians));
-            default:
-                return this;
-        }
+            Axis.X => this * MathOperations.Rotation_X(MathOperations.Degrees(radians)),
+            Axis.Y => this * MathOperations.Rotation_Y(MathOperations.Degrees(radians)),
+            Axis.Z => this * MathOperations.Rotation_Z(MathOperations.Degrees(radians)),
+            _ => this,
+        };
     }
 
     public Matrix Transpose()
     {
         return MathOperations.TransposeMatrix(this);
+    }
+
+    public Matrix Inverse()
+    {
+        return MathOperations.InverseMatrix(this);
     }
 
     public bool Equals(Matrix m)
@@ -80,10 +79,4 @@ public class Matrix
     {
         return MathOperations.MultiplyMatrixWithTuple(a, b).ToVector();
     }
-
-    public Matrix Inverse()
-    {
-        return MathOperations.InverseMatrix(this);
-    }
-
 }

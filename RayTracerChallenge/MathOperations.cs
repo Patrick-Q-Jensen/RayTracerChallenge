@@ -34,10 +34,6 @@ public static class MathOperations {
         return new Vector(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
     }
 
-    //public static Vector SubtractVectors(Vector a, Vector b) {
-    //    return new Vector(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
-    //}
-
     public static Tuple SubtractTuples(Tuple a, Tuple b) {
         return new Tuple(a.X - b.X, a.Y - b.Y, a.Z - b.Z, a.W - b.W);
     }
@@ -335,21 +331,6 @@ public static class MathOperations {
             MultiplyMatrixWithTuple(transformationMatrix, r.Direction).ToVector());
     }
 
-    //public static Vector NormalOnSphere(Sphere s, Point p)
-    //{
-    //    //Point objectPoint = MultiplyMatrixWithTuple(InverseMatrix(s.Transformation), worldPoint).ToPoint();
-    //    Vector objectNormal = SubtractPoints(p, new Point(0, 0, 0));
-    //    Vector worldNormal = MultiplyMatrixWithTuple(TransposeMatrix(InverseMatrix(s.Transformation)), objectNormal).ToVector();
-    //    return NormalizeVector(worldNormal);
-    //}
-
-    //public static Vector NormalOnShape(Shape s, Point p)
-    //{
-    //    Point localPoint = s.Transformation.Inverse() * p;
-    //    Vector localNormal = 
-
-    //}
-
     public static Vector Reflect(Vector v, Vector n)
     {
         return v - n * 2 * VectorsDotProduct(v, n);
@@ -377,16 +358,6 @@ public static class MathOperations {
         }
         return ambient.Add(diffuse).Add(specular);
     }
-
-    //public static Vector GetNormal(Shape shape, Point position)
-    //{
-    //    if (typeof(Sphere) == shape.GetType())
-    //    {
-    //        return NormalOnSphere((Sphere)shape, position);
-    //    }
-
-    //    return null;
-    //}
 
     public static Color ShadeHit(World w, IntersectionComputation ic)
     {

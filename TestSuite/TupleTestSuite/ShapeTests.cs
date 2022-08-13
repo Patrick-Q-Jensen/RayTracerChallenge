@@ -26,7 +26,6 @@ public class ShapeTests
         s.Material.Equals(mat).Should().BeTrue();
     }
 
-
     [Fact]
     public void SetSphereTransformation()
     {
@@ -34,5 +33,17 @@ public class ShapeTests
         Matrix t = MathOperations.Translation(2, 3, 4);
         s.SetTransformation(t);
         MathOperations.MatricesEqual(t, s.Transformation).Should().BeTrue();
+    }
+
+    [Fact]
+    public void NormalOnPlaneIsSameEveryWhere()
+    {
+        Plane p = new Plane();
+        Vector n1 = p.Normal(new Point(0, 0, 0));
+        Vector n2 = p.Normal(new Point(10, 0, -10));
+        Vector n3 = p.Normal(new Point(-5, 0, 150));
+        n1.Equals(new Vector(0, 1, 0)).Should().BeTrue();
+        n2.Equals(new Vector(0, 1, 0)).Should().BeTrue();
+        n3.Equals(new Vector(0, 1, 0)).Should().BeTrue();
     }
 }

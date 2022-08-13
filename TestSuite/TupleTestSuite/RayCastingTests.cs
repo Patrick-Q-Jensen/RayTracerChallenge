@@ -268,4 +268,44 @@ public class RayCastingTests
         Vector r = MathOperations.Reflect(v, n);
         MathOperations.TuplesEqual(r, new Vector(1, 0, 0)).Should().BeTrue();
     }
+
+    [Fact]
+    public void RayParallelToPlane()
+    {
+        Plane p = new Plane();
+        Ray r = new Ray(new Point(0, 10, 0), new Vector(0,0,1));
+        Intersections intersecs = p.Intersections(r);
+        intersecs.list.Count.Should().Be(0);
+    }
+
+    [Fact]
+    public void RayCoplanarWithPlane()
+    {
+        Plane p = new Plane();
+        Ray r = new Ray(new Point(0, 0, 0), new Vector(0, 0, 1));
+        Intersections intersecs = p.Intersections(r);
+        intersecs.list.Count.Should().Be(0);
+    }
+
+    [Fact]
+    public void RayIntersectingPlaneFromAbove()
+    {
+        Plane p = new Plane();
+        Ray r = new Ray(new Point(0, 1, 0), new Vector(0, -1, 0));
+        Intersections intersecs = p.Intersections(r);
+        intersecs.list.Count.Should().Be(1);
+        intersecs.list[0].T.Should().Be(1);
+        intersecs.list[0].Shape.Should().Be(p);
+    }
+
+    [Fact]
+    public void RayIntersectingPlaneFromBelow()
+    {
+        Plane p = new();
+        Ray r = new(new Point(0, -1, 0), new Vector(0, 1, 0));
+        Intersections intersecs = p.Intersections(r);
+        intersecs.list.Count.Should().Be(1);
+        intersecs.list[0].T.Should().Be(1);
+        intersecs.list[0].Shape.Should().Be(p);
+    }
 }

@@ -65,4 +65,18 @@ public class Camera
         }
         return image;
     }
+
+    public Canvas ThreadedRender(World w)
+    {
+        Canvas image = new Canvas((int)Math.Round(Hsize), (int)Math.Round(Vsize));
+        Parallel.For(0, (int)Vsize, vsize => {
+            for (int hsize = 0; hsize < Hsize - 1; hsize++)
+            {
+                Ray r = RayForPixel(hsize, vsize);
+                Color c = w.TraceRayColor(r);
+                image.WritePixelColor(c, vsize, hsize);
+            }
+        });
+        return image;
+    }
 }

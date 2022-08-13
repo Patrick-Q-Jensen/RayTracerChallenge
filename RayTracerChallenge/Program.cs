@@ -1,11 +1,14 @@
-﻿namespace RayTracerChallenge;
+﻿using System.Diagnostics;
+
+namespace RayTracerChallenge;
 
 internal class Program {
     static void Main(string[] args) {
 
         //CastRayTest();
         //CastRayTest1();
-        Chapter7();
+        //Chapter7();
+        PlaneChapter();
     }
 
     private static void CastRayTest1()
@@ -156,6 +159,12 @@ internal class Program {
         leftSphere.Material.Diffuse = 0.7;
         leftSphere.Material.Specular = 0.3;
 
+        Plane p = new Plane();
+        //p.Transformation = p.Transformation.Translate(0,0,0);
+        p.Material.Color = new Color(1, 0.8, 0.1);
+        p.Material.Diffuse = 0.7;
+        p.Material.Specular = 0.3;
+
         world.PointLight = new PointLight(new Point(10, 10, -10), new Color(1, 1, 1));
         
         Camera camera = new Camera(600, 600, Math.PI / 3);
@@ -172,9 +181,50 @@ internal class Program {
         world.Shapes.Add(rightSphere);
         world.Shapes.Add(leftSphere);
         world.Shapes.Add(middleSphere);
+        world.Shapes.Add(p);
 
         Canvas image = camera.Render(world);
         image.SavePPMToFile(image.ConvertToPPM(), @"C:\Users\Patrick Quitzau Jens\Documents\CastRayTest1.ppm");
+    }
+
+    private static void PlaneChapter()
+    {
+        World world = new World();
+
+        Plane p = new Plane();
+        p.Transformation = p.Transformation.Translate(0,-1,0);
+        p.Material.Color = new Color(1, 0.8, 0.1);
+        p.Material.Diffuse = 0.7;
+        p.Material.Specular = 0.3;
+
+        Plane bg = new Plane();
+        bg.Transformation = p.Transformation.Translate(0, 0, 10).Rotate(Axis.X,Math.PI/2);
+        bg.Material.Color = new Color(1, 0.8, 0.1);
+        bg.Material.Diffuse = 0.7;
+        bg.Material.Specular = 0.3;
+
+        world.PointLight = new PointLight(new Point(10, 10, -10), new Color(1, 1, 1));
+
+        Camera camera = new Camera(500, 500, Math.PI / 3);
+        camera.Tranformation = MathOperations.ViewTransform(
+            new Point(0, 2.5, -8),
+            new Point(0, 1, 0),
+            new Vector(0, 1, 0));
+
+        world.Shapes.Add(p);
+        world.Shapes.Add(bg);
+        Stopwatch sw = new Stopwatch();
+        sw.Start();
+        Canvas image = camera.Render(world);
+        sw.Stop();
+        Console.WriteLine($"It took {sw.ElapsedMilliseconds}ms to generate the non-threaded render");
+        sw.Restart();
+        Canvas image2 = camera.ThreadedRender(world);
+        sw.Stop();
+        Console.WriteLine($"It took {sw.ElapsedMilliseconds}ms to generate the threaded render");
+
+        image.SavePPMToFile(image.ConvertToPPM(), @"C:\Users\Patrick Quitzau Jens\Documents\CastRayTest1.ppm");
+        image2.SavePPMToFile(image.ConvertToPPM(), @"C:\Users\Patrick Quitzau Jens\Documents\CastRayTest2.ppm");
     }
 }
 

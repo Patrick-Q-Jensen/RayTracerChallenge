@@ -6,6 +6,19 @@ public abstract class Pattern
     public Color B = new();
     public Matrix Transformation = MathOperations.IdentityMatrix;
 
+    protected Pattern(Color a, Color b)
+    {
+        A = a;
+        B = b;
+    }
+
+    protected Pattern(Color a, Color b, Matrix transformation)
+    {
+        A = a;
+        B = b;
+        Transformation = transformation;
+    }
+
     public void Transform(Matrix m)
     {
         Transformation = m;

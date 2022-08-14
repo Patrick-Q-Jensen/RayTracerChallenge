@@ -2,18 +2,8 @@
 
 public class Striped : Pattern
 {
-    public Striped(Color a, Color b)
-    {
-        A = a;
-        B = b;
-    }
-
-    public Striped(Color a, Color b, Matrix transformation)
-    {
-        A = a;
-        B = b;
-        Transformation = transformation;
-    }
+    public Striped(Color a, Color b) : base(a, b){}
+    public Striped(Color a, Color b, Matrix transformation) : base(a, b, transformation){}
 
     public override Color ColorAt(Point p)
     {

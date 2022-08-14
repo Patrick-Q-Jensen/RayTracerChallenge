@@ -114,4 +114,17 @@ public class PatternTests
         grad.ColorAt(new Point(0.5,0,0)).Equals(new Color(0.5, 0.5, 0.5)).Should().BeTrue();
         grad.ColorAt(new Point(0.75,0,0)).Equals(new Color(0.25, 0.25, 0.25)).Should().BeTrue();
     }
+
+    [Fact]
+    public void ARingShouldExtendInBothXandZ()
+    {
+        Color white = new(1, 1, 1);
+        Color black = new(0, 0, 0);
+        Pattern ringed = new Ringed(white, black);
+        ringed.ColorAt(new Point(0, 0, 0)).Equals(white).Should().BeTrue();
+        ringed.ColorAt(new Point(1, 0, 0)).Equals(black).Should().BeTrue();
+        ringed.ColorAt(new Point(0, 0, 1)).Equals(black).Should().BeTrue();
+        ringed.ColorAt(new Point(0.708, 0, 0.708)).Equals(black).Should().BeTrue();
+
+    }
 }

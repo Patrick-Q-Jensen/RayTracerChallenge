@@ -16,7 +16,6 @@ public class World
         Intersections intersecs = new Intersections();
         foreach (Shape shape in Shapes)
         {
-            //intersecs.list.AddRange(r.Intersections((Sphere)shape).list);
             intersecs.list.AddRange(shape.Intersections(r).list);
         }
         intersecs.list = intersecs.list.OrderBy(x => x.T).ToList();

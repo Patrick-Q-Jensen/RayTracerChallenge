@@ -77,7 +77,7 @@ internal class Program {
                 Point intersectionPoint = r.Position(hit.T);
                 Vector normal = hit.Shape.Normal(intersectionPoint);
                 Vector eye = r.Direction.Negate();
-                Color color = MathOperations.Lighting(hit.Shape.Material, intersectionPoint, light, eye, normal);
+                Color color = MathOperations.Lighting(hit.Shape, intersectionPoint, light, eye, normal);
                 canvas.WritePixelColor(color, x, y);
             }
         }
@@ -200,8 +200,16 @@ internal class Program {
         Plane bg = new Plane();
         bg.Transformation = p.Transformation.Translate(0, 0, 10).Rotate(Axis.X,Math.PI/2);
         bg.Material.Color = new Color(1, 0.8, 0.1);
+        bg.Material.Pattern = new Striped(new Color(1, 0.8, 0.1), new Color(1, 1, 0.4));
         bg.Material.Diffuse = 0.7;
         bg.Material.Specular = 0.3;
+
+        Sphere middleSphere = new Sphere();
+        middleSphere.Transformation = middleSphere.Transformation.Translate(-0.5, 1, 0.5);
+        middleSphere.Material.Color = new Color(0.1, 1, 0.5);
+        middleSphere.Material.Pattern = new Striped(new Color(0.1, 1, 0.5), new Color(0.6, 1, 0.5), MathOperations.Scaling(0.2,0.2,0.2));
+        middleSphere.Material.Diffuse = 0.7;
+        middleSphere.Material.Specular = 0.3;
 
         world.PointLight = new PointLight(new Point(10, 10, -10), new Color(1, 1, 1));
 
@@ -210,21 +218,22 @@ internal class Program {
             new Point(0, 2.5, -8),
             new Point(0, 1, 0),
             new Vector(0, 1, 0));
-
+        world.Shapes.Clear();
+        world.Shapes.Add(middleSphere);
         world.Shapes.Add(p);
         world.Shapes.Add(bg);
         Stopwatch sw = new Stopwatch();
         sw.Start();
-        Canvas image = camera.Render(world);
-        sw.Stop();
-        Console.WriteLine($"It took {sw.ElapsedMilliseconds}ms to generate the non-threaded render");
-        sw.Restart();
+        //Canvas image = camera.Render(world);
+        //sw.Stop();
+        //Console.WriteLine($"It took {sw.ElapsedMilliseconds}ms to generate the non-threaded render");
+        //sw.Restart();
         Canvas image2 = camera.ThreadedRender(world);
         sw.Stop();
-        Console.WriteLine($"It took {sw.ElapsedMilliseconds}ms to generate the threaded render");
+        Console.WriteLine($"It took {sw.ElapsedMilliseconds/1000}s to generate the threaded render");
 
-        image.SavePPMToFile(image.ConvertToPPM(), @"C:\Users\Patrick Quitzau Jens\Documents\CastRayTest1.ppm");
-        image2.SavePPMToFile(image.ConvertToPPM(), @"C:\Users\Patrick Quitzau Jens\Documents\CastRayTest2.ppm");
+        //image.SavePPMToFile(image.ConvertToPPM(), @"C:\Users\Patrick Quitzau Jens\Documents\CastRayTest1.ppm");
+        image2.SavePPMToFile(image2.ConvertToPPM(), @"C:\Users\Patrick Quitzau Jens\Documents\CastRayTest2.ppm");
     }
 }
 

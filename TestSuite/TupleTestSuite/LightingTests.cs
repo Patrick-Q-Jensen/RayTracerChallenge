@@ -49,62 +49,65 @@
         [Fact]
         public void LightingWithEyeBetweenLightAndSurface()
         {
-            Material m = new Material();
+            Sphere s = new Sphere();
+            //Material m = new Material();
             Point position = new Point(0, 0, 0);
             Vector eye = new Vector(0, 0, -1);
             Vector normalV = new Vector(0, 0, -1);
             PointLight light = new PointLight(new Point(0,0,-10), new Color(1,1,1));
-            Color result = MathOperations.Lighting(m, position, light, eye, normalV);
+            Color result = MathOperations.Lighting(s, position, light, eye, normalV);
             MathOperations.TuplesEqual(result, new Color(1.9, 1.9, 1.9)).Should().BeTrue();
         }
 
         [Fact]
         public void LightingWithEyeBetweenLightAndSurfaceOffset45Deg()
         {
-            Material m = new Material();
+            Sphere s = new Sphere();
+            //Material m = new Material();
             Point position = new Point(0, 0, 0);
             Vector eye = new Vector(0, Math.Sqrt(2)/2, -Math.Sqrt(2) / 2);
             Vector normalV = new Vector(0, 0, -1);
             PointLight light = new PointLight(new Point(0, 0, -10), new Color(1, 1, 1));
-            Color result = MathOperations.Lighting(m, position, light, eye, normalV);
+            Color result = MathOperations.Lighting(s, position, light, eye, normalV);
             MathOperations.TuplesEqual(result, new Color(1, 1, 1)).Should().BeTrue();
         }
 
         [Fact]
         public void LightingWithEyeOppositeSurfaceOffset45Deg()
         {
-            Material m = new Material();
+            Sphere s = new Sphere();
+            //Material m = new Material();
             Point position = new Point(0, 0, 0);
-
             Vector eye = new Vector(0, 0, -1);
             Vector normalV = new Vector(0, 0, -1);
             PointLight light = new PointLight(new Point(0, 10, -10), new Color(1, 1, 1));
-            Color result = MathOperations.Lighting(m, position, light, eye, normalV);
+            Color result = MathOperations.Lighting(s, position, light, eye, normalV);
             MathOperations.TuplesEqual(result, new Color(0.7364, 0.7364, 0.7364)).Should().BeTrue();
         }
 
         [Fact]
         public void LightingWithEyeInPathOfRelectionVector()
         {
-            Material m = new Material();
+            Sphere s = new Sphere();
+            //Material m = new Material();
             Point position = new Point(0, 0, 0);
-
             Vector eye = new Vector(0, -Math.Sqrt(2) / 2, -Math.Sqrt(2) / 2);
             Vector normalV = new Vector(0, 0, -1);
             PointLight light = new PointLight(new Point(0, 10, -10), new Color(1, 1, 1));
-            Color result = MathOperations.Lighting(m, position, light, eye, normalV);
+            Color result = MathOperations.Lighting(s, position, light, eye, normalV);
             MathOperations.TuplesEqual(result, new Color(1.6364, 1.6364, 1.6364)).Should().BeTrue();
         }
 
         [Fact]
         public void LightingWithLightBehindTheSurface()
         {
-            Material m = new();
+            Sphere s = new Sphere();
+            //Material m = new();
             Point position = new(0, 0, 0);
             Vector eye = new(0, 0, -1);
             Vector normalV = new(0, 0, -1);
             PointLight light = new(new Point(0,0,10),new Color(1,1,1));
-            Color result = MathOperations.Lighting(m, position, light, eye, normalV);
+            Color result = MathOperations.Lighting(s, position, light, eye, normalV);
             MathOperations.TuplesEqual(result, new Color(0.1, 0.1, 0.1)).Should().BeTrue();
         }
 
@@ -154,12 +157,12 @@
         [Fact]
         public void TheColorWithAnIntersectionBehindTheRay()
         {
-            World w = new World();
+            World w = new();
             Shape outer = w.Shapes[0];
             outer.Material.Ambient = 1;
             Shape inner = w.Shapes[1];
             inner.Material.Ambient = 1;
-            Ray r = new Ray(new Point(0, 0, 0.75), new Vector(0, 0, -1));
+            Ray r = new(new Point(0, 0, 0.75), new Vector(0, 0, -1));
             Color c = MathOperations.ColorAt(w, r);
             c.Equals(inner.Material.Color).Should().BeTrue();
         }
@@ -167,14 +170,14 @@
         [Fact]
         public void LightingWithSurfaceInShadow()
         {
-            Material m = new Material();
-            Point position = new Point(0, 0, 0);
-
-            Vector eyeV = new Vector(0, 0, -1);
-            Vector normalV = new Vector(0, 0, -1);
-            PointLight light = new PointLight(new Point(0, 0, -10), new Color(1, 1, 1));
+            Sphere s = new();
+            //Material m = new Material();
+            Point position = new(0, 0, 0);
+            Vector eyeV = new(0, 0, -1);
+            Vector normalV = new(0, 0, -1);
+            PointLight light = new(new Point(0, 0, -10), new Color(1, 1, 1));
             bool inShadow = true;
-            Color c = MathOperations.Lighting(m, position, light, eyeV, normalV, inShadow);
+            Color c = MathOperations.Lighting(s, position, light, eyeV, normalV, inShadow);
             c.Equals(new Color(0.1, 0.1, 0.1)).Should().BeTrue();
         }
 

@@ -4,7 +4,7 @@ public class Material :  IEquatable<Material>
 {
     public Color Color = new Color(1,1,1);
     //private double ambient, diffuse, specular, shininess;
-
+    public Pattern Pattern;
     public double Ambient;
     public double Diffuse;
     public double Specular;

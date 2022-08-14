@@ -336,24 +336,29 @@ public static class MathOperations {
         return v - n * 2 * VectorsDotProduct(v, n);
     }
 
-    public static Color Lighting(Material material, Point illuminationPoint, PointLight lightSource, Vector eye, Vector normal, bool inShadow = false)
+    public static Color Lighting(Shape shape, Point illuminationPoint, PointLight lightSource, Vector eye, Vector normal, bool inShadow = false)
     {
-        Color effectiveColor = material.Color * lightSource.Intensity;
+        Color color = shape.Material.Color;
+        if (shape.Material.Pattern is not null)
+        {
+            color = shape.ColorAt(illuminationPoint);
+        }
+        Color effectiveColor = color * lightSource.Intensity;
         Vector lightVector = (lightSource.Position - illuminationPoint).Normalize();
-        Color ambient = effectiveColor * material.Ambient;
+        Color ambient = effectiveColor * shape.Material.Ambient;
         double lightDotNormal = VectorsDotProduct(lightVector, normal);
         Color diffuse = new Color(0,0,0);
         Color specular = new Color(0,0,0);
         if (inShadow) return ambient;
         if (lightDotNormal > 0)
         {
-            diffuse = effectiveColor * material.Diffuse * lightDotNormal;
+            diffuse = effectiveColor * shape.Material.Diffuse * lightDotNormal;
             Vector reflectV = Reflect(lightVector.Negate(), normal);
             double reflectDotEye = VectorsDotProduct(reflectV, eye);
             if (reflectDotEye > 0)
             {
-                double factor = Math.Pow(reflectDotEye, material.Shininess);
-                specular = lightSource.Intensity * material.Specular * factor;
+                double factor = Math.Pow(reflectDotEye, shape.Material.Shininess);
+                specular = lightSource.Intensity * shape.Material.Specular * factor;
             }
         }
         return ambient.Add(diffuse).Add(specular);
@@ -362,7 +367,7 @@ public static class MathOperations {
     public static Color ShadeHit(World w, IntersectionComputation ic)
     {
         bool inShadow = w.IsShadowed(ic.OverPoint);
-        return Lighting(ic.Shape.Material, ic.OverPoint, w.PointLight, ic.EyeV, ic.NormalV, inShadow);
+        return Lighting(ic.Shape, ic.OverPoint, w.PointLight, ic.EyeV, ic.NormalV, inShadow);
     }
 
     public static Color ColorAt(World w, Ray r)

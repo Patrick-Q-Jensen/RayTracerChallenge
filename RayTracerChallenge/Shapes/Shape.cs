@@ -9,6 +9,7 @@ public abstract class Shape
     {
         Transformation = matrix;
     }
+
     public Vector Normal(Point p)
     {
         Point localPoint = ConvertPointToObjectSpace(p);
@@ -28,9 +29,21 @@ public abstract class Shape
         return MathOperations.TransformRay(r, this.Transformation.Inverse());
     }
 
+    public Color ColorAt(Point p)
+    {
+        if (Material.Pattern is not null)
+        {
+            Point localPoint = ConvertPointToObjectSpace(p);
+            Point patternPoint = Material.Pattern.Transformation.Inverse() * localPoint;
+            return Material.Pattern.ColorAt(patternPoint);
+        }
+        return Material.Color;
+    }
+
     private Point ConvertPointToObjectSpace(Point p)
     {
-        return MathOperations.MultiplyMatrixWithTuple(this.Transformation.Inverse(), p).ToPoint();
+        //return MathOperations.MultiplyMatrixWithTuple(this.Transformation.Inverse(), p).ToPoint();
+        return Transformation.Inverse() * p;
     }
 
     protected abstract Vector LocalNormal(Point localPoint);

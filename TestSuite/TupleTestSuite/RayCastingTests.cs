@@ -308,4 +308,99 @@ public class RayCastingTests
         intersecs.list[0].T.Should().Be(1);
         intersecs.list[0].Shape.Should().Be(p);
     }
+
+    [Fact]
+    public void RecomputingTheReflectionVector()
+    {
+        Shape s = new Plane();
+        Ray r = new Ray(new Point(0,0,0), new Vector(0, -Math.Sqrt(2)/2, Math.Sqrt(2) / 2));
+        Intersection i = new Intersection(Math.Sqrt(2), s);
+        IntersectionComputation ic = new IntersectionComputation(i, r);
+        ic.ReflectV.Equals(new Vector(0, Math.Sqrt(2) / 2, Math.Sqrt(2) / 2)).Should().BeTrue();
+    }
+
+    [Fact]
+    public void TheReflectedColorForANonreflectiveMaterial()
+    {
+        World w = new World();
+        Ray r = new Ray(new Point(0, 0, 0), new Vector(0, 0, 1));
+        Shape s = w.Shapes[1];
+        s.Material.Ambient = 1;
+        Intersection i = new Intersection(1, s);
+        IntersectionComputation ic = new IntersectionComputation(i, r);
+        Color c = ic.ReflectColor(w);
+        c.Equals(new Color(0, 0, 0)).Should().BeTrue();
+    }
+
+
+    [Fact]
+    public void TheReflectedColorForAReflectiveMaterial()
+    {
+        World w = new World();
+        Shape p = new Plane();
+        p.Material.Reflective = 0.5;
+        p.SetTransformation(MathOperations.Translation(0, -1, 0));
+        w.Shapes.Add(p);
+        Ray r = new Ray(new Point(0, 0, -3), new Vector(0, -Math.Sqrt(2) / 2, Math.Sqrt(2) / 2));
+        Intersection i = new Intersection(Math.Sqrt(2), p);
+        IntersectionComputation ic = new IntersectionComputation(i, r);
+        Color c = ic.ReflectColor(w);
+        c.Equals(new Color(0.1903322, 0.237915, 0.1427491)).Should().BeTrue();
+    }
+
+    [Fact]
+    public void ShadeHitWithReflectiveMaterial()
+    {
+        World w = new();
+        Shape p = new Plane();
+        p.Material.Reflective = 0.5;
+        p.SetTransformation(MathOperations.Translation(0, -1, 0));
+        w.Shapes.Add(p);
+        Ray r = new(new Point(0, 0, -3), new Vector(0, -Math.Sqrt(2) / 2, Math.Sqrt(2) / 2));
+        Intersection i = new(Math.Sqrt(2), p);
+        IntersectionComputation ic = new(i, r);
+        Color c = MathOperations.ShadeHit(w, ic);
+        Color c1 = new Color(0.876757, 0.924340, 0.8291742);
+        c.Equals(c1).Should().BeTrue();
+    }
+
+    [Fact]
+    public void ColorAtWithMutuallyReflectiveSurfaces()
+    {
+        World w = new World();
+        w.Shapes.Clear();
+        w.PointLight = new PointLight(new Point(0, 0, 0), new Color(1, 1, 1));
+        Plane lower = new Plane();
+        lower.Material.Reflective = 1;
+        lower.SetTransformation(MathOperations.Translation(0, -1, 0));
+        Plane upper = new Plane();
+        upper.Material.Reflective = 1;
+        upper.SetTransformation(MathOperations.Translation(0, 1, 0));
+        w.Shapes.Add(lower);
+        w.Shapes.Add(upper);
+        Ray ray = new Ray(new Point(0, 0, 0), new Vector(0, 1, 0));
+        MathOperations.ColorAt(w, ray, 2);
+        //w.TraceRayColor(ray);
+    }
+
+    [Fact]
+    public void ReflectedColorAtTheMaximumRecursiveDepth()
+    {
+        World w = new World();
+        Plane p = new Plane();
+        w.Shapes.Clear();
+        p.Material.Reflective = 0.5;
+        p.SetTransformation(MathOperations.Translation(0,-1,0));
+        Plane upper = new Plane();
+        upper.Material.Reflective = 1;
+        upper.SetTransformation(MathOperations.Translation(0, 1, 0));
+        w.Shapes.Add(p);
+        w.Shapes.Add(upper);
+        Ray r = new Ray(new Point(0, 0, -3), new Vector(0, -Math.Sqrt(2) / 2, Math.Sqrt(2) / 2));
+        Intersection i = new(Math.Sqrt(2), p);
+        IntersectionComputation ic = new(i, r);
+        Color c = w.ReflectColor(ic, 0);
+        c.Equals(new Color(0, 0, 0)).Should().BeTrue();
+    }
+
 }

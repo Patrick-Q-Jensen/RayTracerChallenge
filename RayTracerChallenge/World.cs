@@ -43,4 +43,9 @@ public class World
         if (hit.T < distance) return true;
         return false;
     }
+
+    public Color ReflectColor(IntersectionComputation ic, int remainingReflections = 5)
+    {
+        return MathOperations.ReflectedColor(this, ic, remainingReflections);
+    }
 }

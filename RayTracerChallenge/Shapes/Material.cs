@@ -9,14 +9,15 @@ public class Material :  IEquatable<Material>
     public double Diffuse;
     public double Specular;
     public double Shininess;
+    public double Reflective;
 
-
-    public Material(double ambient = 0.1, double diffuse = 0.9, double specular = 0.9, double shininess = 200)
+    public Material(double ambient = 0.1, double diffuse = 0.9, double specular = 0.9, double shininess = 200, double reflective = 0)
     {
         Ambient = ambient;
         Diffuse = diffuse;
         Specular = specular;
         Shininess = shininess;
+        Reflective = reflective;
     }
     public Material(Color color, double ambient = 0.1, double diffuse = 0.9, double specular = 0.9, double shininess = 200)
     {

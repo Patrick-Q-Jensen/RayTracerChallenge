@@ -10,13 +10,9 @@ public class Ringed : Pattern
         double squaredX = Math.Pow(p.X, 2);
         double squaredZ = Math.Pow(p.Z, 2);
 
-        if (Math.Floor(Math.Sqrt(squaredX + squaredZ)) % 2 == 0)
-        {
+        if (Math.Floor(Math.Sqrt(squaredX + squaredZ)) % 2 == 0) {
             return A;
         }
-        else
-        {
-            return B;
-        }
+        return B;
     }
 }

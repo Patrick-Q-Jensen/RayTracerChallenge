@@ -82,8 +82,7 @@ public class PatternTests
     {
         Color white = new(1, 1, 1);
         Color black = new(0, 0, 0);
-        Sphere s = new Sphere();
-        //s.SetTransformation(MathOperations.Scaling(2, 2, 2));
+        Sphere s = new Sphere();        
         Pattern p = new Striped(white, black, MathOperations.Scaling(2, 2, 2));
         s.Material.Pattern = p;
         Color c = s.ColorAt(new Point(1.5, 0, 0));
@@ -125,6 +124,38 @@ public class PatternTests
         ringed.ColorAt(new Point(1, 0, 0)).Equals(black).Should().BeTrue();
         ringed.ColorAt(new Point(0, 0, 1)).Equals(black).Should().BeTrue();
         ringed.ColorAt(new Point(0.708, 0, 0.708)).Equals(black).Should().BeTrue();
+    }
 
+    [Fact]
+    public void CheckersShouldRepeatInX()
+    {
+        Color white = new(1, 1, 1);
+        Color black = new(0, 0, 0);
+        Pattern checkered = new Checkered(white, black);
+        checkered.ColorAt(new Point(0,0,0)).Equals(white).Should().BeTrue();
+        checkered.ColorAt(new Point(0.99,0,0)).Equals(white).Should().BeTrue();
+        checkered.ColorAt(new Point(1.01,0,0)).Equals(black).Should().BeTrue();
+    }
+
+    [Fact]
+    public void CheckersShouldRepeatInY()
+    {
+        Color white = new(1, 1, 1);
+        Color black = new(0, 0, 0);
+        Pattern checkered = new Checkered(white, black);
+        checkered.ColorAt(new Point(0, 0, 0)).Equals(white).Should().BeTrue();
+        checkered.ColorAt(new Point(0, 0.99, 0)).Equals(white).Should().BeTrue();
+        checkered.ColorAt(new Point(0, 1.01, 0)).Equals(black).Should().BeTrue();
+    }
+
+    [Fact]
+    public void CheckersShouldRepeatInZ()
+    {
+        Color white = new(1, 1, 1);
+        Color black = new(0, 0, 0);
+        Pattern checkered = new Checkered(white, black);
+        checkered.ColorAt(new Point(0, 0, 0)).Equals(white).Should().BeTrue();
+        checkered.ColorAt(new Point(0, 0, 0.99)).Equals(white).Should().BeTrue();
+        checkered.ColorAt(new Point(0, 0, 1.01)).Equals(black).Should().BeTrue();
     }
 }

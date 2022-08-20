@@ -7,13 +7,9 @@ public class Striped : Pattern
 
     public override Color ColorAt(Point p)
     {
-        if (Math.Floor(p.X) % 2 == 0)
-        {
+        if (Math.Floor(p.X) % 2 == 0) {
             return A;
         }
-        else
-        {
-            return B;
-        }
+        return B;
     }
 }

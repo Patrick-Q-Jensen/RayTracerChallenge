@@ -364,19 +364,21 @@ public static class MathOperations {
         return ambient.Add(diffuse).Add(specular);
     }
 
-    public static Color ShadeHit(World w, IntersectionComputation ic)
+    public static Color ShadeHit(World w, IntersectionComputation ic, int remainingReflections = 5)
     {
         bool inShadow = w.IsShadowed(ic.OverPoint);
-        return Lighting(ic.Shape, ic.OverPoint, w.PointLight, ic.EyeV, ic.NormalV, inShadow);
+        Color surface = Lighting(ic.Shape, ic.OverPoint, w.PointLight, ic.EyeV, ic.NormalV, inShadow);
+        Color reflected = ReflectedColor(w, ic, remainingReflections);
+        return surface + reflected;
     }
 
-    public static Color ColorAt(World w, Ray r)
+    public static Color ColorAt(World w, Ray r, int remainingReflections = 5)
     {
         Intersections intersecs = w.IntersectRay(r);
         Intersection i = intersecs.FindHit();
         if (i == null) return new Color(0, 0, 0);
         IntersectionComputation ic = new(i, r);
-        return ShadeHit(w, ic);
+        return ShadeHit(w, ic, remainingReflections);
     }
 
     public static Matrix ViewTransform(Point from, Point to, Vector up)
@@ -390,6 +392,21 @@ public static class MathOperations {
             { -forward.X, -forward.Y, -forward.Z, 0 }, 
             { 0, 0, 0, 1 } });
         return orientation * Translation(-from.X, -from.Y, -from.Z);
+    }
+
+    public static Color ReflectedColor(World w, IntersectionComputation ic, int remainingReflections = 5)
+    {
+        if (remainingReflections <= 0)
+        {
+            return new Color(0, 0, 0);
+        }
+        if (ic.Shape.Material.Reflective <= 0)
+        {
+            return new Color(0, 0, 0);
+        }
+        Ray reflectRay = new Ray(ic.OverPoint, ic.ReflectV);
+        Color c = ColorAt(w, reflectRay, remainingReflections-1);
+        return c * ic.Shape.Material.Reflective;
     }
 
 }

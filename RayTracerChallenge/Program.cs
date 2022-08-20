@@ -200,20 +200,20 @@ internal class Program {
         Plane bg = new Plane();
         bg.Transformation = p.Transformation.Translate(0, 0, 10).Rotate(Axis.X,Math.PI/2);
         bg.Material.Color = new Color(1, 0.8, 0.1);
-        bg.Material.Pattern = new Striped(new Color(1, 0.8, 0.1), new Color(1, 1, 0.4));
+        bg.Material.Pattern = new Checkered(new Color(1, 0.8, 0.1), new Color(1, 1, 0.4), MathOperations.Scaling(0.2, 0.2, 0.2));
         bg.Material.Diffuse = 0.7;
         bg.Material.Specular = 0.3;
 
         Sphere middleSphere = new Sphere();
         middleSphere.Transformation = middleSphere.Transformation.Translate(-0.5, 1, 0.5);
         middleSphere.Material.Color = new Color(0.1, 1, 0.5);
-        middleSphere.Material.Pattern = new Striped(new Color(0.1, 1, 0.5), new Color(0.6, 1, 0.5), MathOperations.Scaling(0.2,0.2,0.2));
+        middleSphere.Material.Pattern = new Gradiant(new Color(0.1, 1, 0.5), new Color(0.6, 1, 0.5));
         middleSphere.Material.Diffuse = 0.7;
         middleSphere.Material.Specular = 0.3;
 
         world.PointLight = new PointLight(new Point(10, 10, -10), new Color(1, 1, 1));
 
-        Camera camera = new Camera(500, 500, Math.PI / 3);
+        Camera camera = new Camera(800, 800, Math.PI / 3);
         camera.Tranformation = MathOperations.ViewTransform(
             new Point(0, 2.5, -8),
             new Point(0, 1, 0),

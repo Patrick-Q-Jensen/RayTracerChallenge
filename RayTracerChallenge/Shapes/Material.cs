@@ -3,13 +3,14 @@
 public class Material :  IEquatable<Material>
 {
     public Color Color = new Color(1,1,1);
-    //private double ambient, diffuse, specular, shininess;
     public Pattern Pattern;
     public double Ambient;
     public double Diffuse;
     public double Specular;
     public double Shininess;
     public double Reflective;
+    public double Transparency = 0.0;
+    public double Refractive = 1.0;
 
     public Material(double ambient = 0.1, double diffuse = 0.9, double specular = 0.9, double shininess = 200, double reflective = 0)
     {
@@ -39,5 +40,10 @@ public class Material :  IEquatable<Material>
             && Specular == other.Specular
             && Shininess == other.Shininess
             && Color.Equals(other.Color);
+    }
+
+    public static Material Glass(Color color)
+    {
+        return new Material() { Transparency = 1, Refractive = 1.5 };
     }
 }

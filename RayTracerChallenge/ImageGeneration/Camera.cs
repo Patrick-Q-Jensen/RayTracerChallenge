@@ -12,15 +12,15 @@ public class Camera
     public double HalfWidth;
     public double HalfHeight;
 
-    public Camera(double hsize, double vsize, double fieldOfView)
+    public Camera(double horizontalSize, double verticalSize, double fieldOfView)
     {
-        Hsize = hsize;
-        Vsize = vsize;
+        Hsize = horizontalSize;
+        Vsize = verticalSize;
         FieldOfView = fieldOfView;
         HalfView = Math.Tan(fieldOfView / 2);
-        Aspect = hsize / vsize;
+        Aspect = horizontalSize / verticalSize;
         SetHeightAndWidth();
-        PixelSize = (HalfWidth * 2) / hsize;
+        PixelSize = (HalfWidth * 2) / horizontalSize;
     }
 
     private void SetHeightAndWidth()
@@ -68,7 +68,7 @@ public class Camera
 
     public Canvas ThreadedRender(World w)
     {
-        Canvas image = new Canvas((int)Math.Round(Hsize), (int)Math.Round(Vsize));
+        Canvas image = new Canvas((int)Math.Round(Vsize), (int)Math.Round(Hsize));
         Parallel.For(0, (int)Vsize, vsize => {
             for (int hsize = 0; hsize < Hsize - 1; hsize++)
             {

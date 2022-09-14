@@ -20,4 +20,5 @@ public class Ray
     {
         return MathOperations.TransformRay(this, m);
     }
+
 }

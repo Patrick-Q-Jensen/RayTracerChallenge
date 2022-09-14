@@ -196,6 +196,7 @@ internal class Program {
         p.Material.Color = new Color(1, 0.8, 0.1);
         p.Material.Diffuse = 0.7;
         p.Material.Specular = 0.3;
+        p.Material.Reflective = 0.2;
 
         Plane bg = new Plane();
         bg.Transformation = p.Transformation.Translate(0, 0, 10).Rotate(Axis.X,Math.PI/2);
@@ -205,7 +206,7 @@ internal class Program {
         bg.Material.Specular = 0.3;
 
         Sphere middleSphere = new Sphere();
-        middleSphere.Transformation = middleSphere.Transformation.Translate(-0.5, 1, 0.5);
+        middleSphere.Transformation = middleSphere.Transformation.Translate(-0.5, 0, 0.5);
         middleSphere.Material.Color = new Color(0.1, 1, 0.5);
         middleSphere.Material.Pattern = new Gradiant(new Color(0.1, 1, 0.5), new Color(0.6, 1, 0.5));
         middleSphere.Material.Diffuse = 0.7;
@@ -213,7 +214,7 @@ internal class Program {
 
         world.PointLight = new PointLight(new Point(10, 10, -10), new Color(1, 1, 1));
 
-        Camera camera = new Camera(800, 800, Math.PI / 3);
+        Camera camera = new Camera(1200, 800, Math.PI / 3);
         camera.Tranformation = MathOperations.ViewTransform(
             new Point(0, 2.5, -8),
             new Point(0, 1, 0),

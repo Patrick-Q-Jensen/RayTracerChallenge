@@ -24,6 +24,11 @@ public class Point : Tuple
         return MathOperations.SubtractPoints(a, b);
     }
 
+    public static Point operator -(Point a, Vector b)
+    {
+        return MathOperations.SubtractVectorFromPoint(a, b);
+    }
+
     public static Point operator +(Point a, Point b)
     {
         return MathOperations.AddTuples(a, b).ToPoint();

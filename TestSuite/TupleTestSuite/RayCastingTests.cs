@@ -403,4 +403,73 @@ public class RayCastingTests
         c.Equals(new Color(0, 0, 0)).Should().BeTrue();
     }
 
+    [Fact]
+    public void FindingN1andN2AtVariousIntersections()
+    {
+        Sphere glassSphereA = new Sphere(material:Material.Glass(Color.White));
+        glassSphereA.Material.Refractive = 1.5;
+        glassSphereA.SetTransformation(MathOperations.Scaling(2,2,2));
+        Sphere glassSphereB = new Sphere(material:Material.Glass(Color.White));
+        glassSphereB.Material.Refractive = 2;
+        glassSphereB.SetTransformation(MathOperations.Translation(0, 0, -0.25));
+        Sphere glassSphereC = new Sphere(material: Material.Glass(Color.White));
+        glassSphereC.Material.Refractive = 2.5;
+        glassSphereC.SetTransformation(MathOperations.Translation(0, 0, 0.25));
+
+        Ray r = new Ray(new Point(0, 0, -4), new Vector(0,0,1));
+        Intersection[] iarr = new Intersection[6]
+        {
+            new Intersection(2, glassSphereA),
+            new Intersection(2.75, glassSphereB),
+            new Intersection(3.25, glassSphereC),
+            new Intersection(4.75, glassSphereB),
+            new Intersection(5.25, glassSphereC),
+            new Intersection(6, glassSphereA) 
+        };
+        //Intersection i1 = new Intersection(2, glassSphereA);
+        //Intersection i2 = new Intersection(2.75, glassSphereB);
+        //Intersection i3 = new Intersection(3.25, glassSphereC);
+        //Intersection i4 = new Intersection(4.75, glassSphereB);
+        //Intersection i5 = new Intersection(5.25, glassSphereC);
+        //Intersection i6 = new Intersection(6, glassSphereA);
+        Intersections ics = new Intersections(iarr.ToList());
+        //IntersectionComputation ic = new IntersectionComputation(i, r);
+        IntersectionComputations comps1 = new IntersectionComputations(iarr[0], r, ics);
+        comps1.n1.Should().Be(1.0);
+        comps1.n2.Should().Be(1.5);
+
+        IntersectionComputations comps2 = new IntersectionComputations(iarr[1], r, ics);
+        comps2.n1.Should().Be(1.5);
+        comps2.n2.Should().Be(2.0);
+
+        IntersectionComputations comps3 = new IntersectionComputations(iarr[2], r, ics);
+        comps3.n1.Should().Be(2.0);
+        comps3.n2.Should().Be(2.5);
+
+        IntersectionComputations comps4 = new IntersectionComputations(iarr[3], r, ics);
+        comps4.n1.Should().Be(2.5);
+        comps4.n2.Should().Be(2.5);
+
+        IntersectionComputations comps5 = new IntersectionComputations(iarr[4], r, ics);
+        comps5.n1.Should().Be(2.5);
+        comps5.n2.Should().Be(1.5);
+
+        IntersectionComputations comps6 = new IntersectionComputations(iarr[5], r, ics);
+        comps6.n1.Should().Be(1.5);
+        comps6.n2.Should().Be(1.0);
+    }
+
+    [Fact]
+    public void UnderPointIsOffsetBelowTheSurface()
+    {
+        Ray r = new Ray(new Point(0, 0, -5), new Vector(0, 0, 1));
+        Shape s = new Sphere(Material.Glass(Color.White));
+        s.Transformation = MathOperations.Translation(0, 0, 1);
+        Intersection i = new Intersection(5, s);
+        Intersections intersecs = new Intersections(new List<Intersection> { i });
+        IntersectionComputations computations = new IntersectionComputations(i, r, intersecs);
+        (computations.underPoint.Z > MathOperations.Epsilon / 2).Should().BeTrue();
+        (computations.point.Z < computations.underPoint.Z).Should().BeTrue();
+    }
+
 }

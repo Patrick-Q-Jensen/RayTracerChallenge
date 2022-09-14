@@ -11,6 +11,9 @@ public class Color : Tuple
 
     }
 
+    public static Color White => new(1, 1, 1);
+    public static Color Black => new(0, 0, 0);
+
     public Color Add(Color c)
     {
         return MathOperations.AddTuples(this, c).ToColor();

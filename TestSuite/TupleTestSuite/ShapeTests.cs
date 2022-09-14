@@ -46,4 +46,12 @@ public class ShapeTests
         n2.Equals(new Vector(0, 1, 0)).Should().BeTrue();
         n3.Equals(new Vector(0, 1, 0)).Should().BeTrue();
     }
+
+    [Fact]
+    public void GlassMaterial()
+    {
+        Material mat = Material.Glass(Color.White);
+        mat.Transparency.Should().Be(1);
+        mat.Refractive.Should().Be(1.5);
+    }
 }

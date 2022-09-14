@@ -11,6 +11,7 @@ public class IntersectionComputation
     public double T { get; set; }
     public bool Inside { get; set; }
 
+
     public IntersectionComputation(Intersection intersection, Ray ray)
     {
         T = intersection.T;

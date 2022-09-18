@@ -409,6 +409,20 @@ public static class MathOperations {
         return c * ic.Shape.Material.Reflective;
     }
 
+    public static Color RefractedColor(World w, IntersectionComputations comps, int remaining)
+    {
+        if (comps.Shape.Material.Transparency == 0 || remaining == 0) return Color.Black;
+
+        double nRatio = comps.n1 / comps.n2;
+        double cosI = VectorsDotProduct(comps.EyeV, comps.NormalV);
+        double sin2T = Math.Pow(nRatio, 2) * (1 - Math.Pow(cosI, 2));
+        if (sin2T > 1)
+        {
+            return Color.Black;
+        }
+        return Color.White;
+    }
+
 }
 
 public enum Axis

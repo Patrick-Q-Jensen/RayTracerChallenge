@@ -426,14 +426,9 @@ public class RayCastingTests
             new Intersection(5.25, glassSphereC),
             new Intersection(6, glassSphereA) 
         };
-        //Intersection i1 = new Intersection(2, glassSphereA);
-        //Intersection i2 = new Intersection(2.75, glassSphereB);
-        //Intersection i3 = new Intersection(3.25, glassSphereC);
-        //Intersection i4 = new Intersection(4.75, glassSphereB);
-        //Intersection i5 = new Intersection(5.25, glassSphereC);
-        //Intersection i6 = new Intersection(6, glassSphereA);
+
         Intersections ics = new Intersections(iarr.ToList());
-        //IntersectionComputation ic = new IntersectionComputation(i, r);
+        
         IntersectionComputations comps1 = new IntersectionComputations(iarr[0], r, ics);
         comps1.n1.Should().Be(1.0);
         comps1.n2.Should().Be(1.5);
@@ -470,6 +465,47 @@ public class RayCastingTests
         IntersectionComputations computations = new IntersectionComputations(i, r, intersecs);
         (computations.underPoint.Z > MathOperations.Epsilon / 2).Should().BeTrue();
         (computations.point.Z < computations.underPoint.Z).Should().BeTrue();
+    }
+
+    [Fact]
+    public void RefractedColorWithAnOpaqueSurface()
+    {
+        World world = new();
+        Shape s = world.Shapes.First();
+        Ray r = new(new Point(0, 0, -5), new Vector(0, 0, 1));
+        Intersections xs = new(new List<Intersection> { new Intersection(4, s), new Intersection(6, s) });
+        IntersectionComputations ics = new(xs.list[0], r, xs);
+        Color c = MathOperations.RefractedColor(world, ics, 5);
+        c.Equals(Color.Black).Should().BeTrue();
+    }
+
+    [Fact]
+    public void RefractedColorAtMaximumRecursiveDepth()
+    {
+        World w = new();
+        Shape s = w.Shapes.First();
+        s.Material.Transparency = 1.0;
+        s.Material.Refractive = 1.5;
+        Ray r = new Ray(new Point(0, 0, -5), new Vector(0, 0, 1));
+        Intersections xs = new Intersections(new List<Intersection> { new Intersection(4, s), new Intersection(6, s) });
+        IntersectionComputations comps = new IntersectionComputations(xs.list[0], r, xs);
+        Color c = MathOperations.RefractedColor(w, comps, 0);
+        c.Equals(Color.Black).Should().BeTrue();
+    }
+
+    [Fact]
+    public void RefractedColorUnderTotalInternalReflection()
+    {
+        World w = new World();
+        Shape s = w.Shapes.First();
+        s.Material.Transparency = 1.0;
+        s.Material.Refractive = 1.5;
+
+        Ray r = new Ray(new Point(0, 0, Math.Sqrt(2) / 2), new Vector(0, 1, 0));
+        Intersections xs = new(new List<Intersection> { new Intersection(-Math.Sqrt(2) / 2, s), new Intersection(Math.Sqrt(2) / 2, s) });
+        IntersectionComputations comps = new(xs.list[1], r, xs);
+        Color c = MathOperations.RefractedColor(w, comps, 5);
+        c.Equals(Color.Black).Should().BeTrue();
     }
 
 }

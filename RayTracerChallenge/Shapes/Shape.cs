@@ -42,7 +42,6 @@ public abstract class Shape
 
     private Point ConvertPointToObjectSpace(Point p)
     {
-        //return MathOperations.MultiplyMatrixWithTuple(this.Transformation.Inverse(), p).ToPoint();
         return Transformation.Inverse() * p;
     }
 
